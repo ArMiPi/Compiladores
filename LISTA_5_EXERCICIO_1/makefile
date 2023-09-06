@@ -1,7 +1,14 @@
 ### makefile ###
 
-all:
-	g++ string_utils.cpp Automato.cpp l5e1.cpp -g -o l5e1
+EXEC = l5e1
+OBJS = string_utils.cpp Automato.cpp
+FLAGS = -g -o
 
-l5e1:
-	g++ string_utils.cpp Automato.cpp l5e1.cpp -g -o l5e1
+all:
+	g++ $(OBJS) $(EXEC).cpp $(FLAGS) $(EXEC)
+
+$(EXEC):
+	g++ $(OBJS) $(EXEC).cpp $(FLAGS) $(EXEC)
+
+clear:
+	rm $(EXEC)
