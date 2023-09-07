@@ -44,7 +44,7 @@ int get_index_estado(std::string estado) {
 int get_index_palavra(char palavra) {
     for(int i {0}; i < tam_alfabeto; i++) {
         // Verificar se está dentro de um intervalo
-        if(contains(alfabeto[i], "-") != -1) {
+        if(alfabeto[i].size() > 1 && contains(alfabeto[i], "-") != -1) {
             if(is_in_interval(palavra, alfabeto[i])) return i; 
         }
         else if(palavra == alfabeto[i][0]) {
@@ -53,6 +53,22 @@ int get_index_palavra(char palavra) {
     }
 
     return -1;
+}
+
+
+bool is_final(int index_estado) {
+    std::map<std::string, std::string>::const_iterator it = estados_finais.find(estados[index_estado]);
+
+    return it != estados_finais.end();
+}
+
+
+std::string get_classificacao_token(int index_estado) {
+    if(index_estado == -1) return "";
+
+    std::map<std::string, std::string>::const_iterator it = estados_finais.find(estados[index_estado]);
+
+    return it->second;
 }
 
 

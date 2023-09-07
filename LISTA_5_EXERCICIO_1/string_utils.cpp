@@ -3,25 +3,6 @@
 
 #include "string_utils.h"
 
-/**
- * Returns how many times target appears in str.
-*/
-size_t ocurrencies(std::string str, std::string target) {
-    std::string temp {str};
-    int quantity {0};
-    int occurency = contains(temp, target);
-
-    while(occurency != -1) {
-        quantity++;
-
-        temp = temp.substr(occurency+target.size(), temp.size());
-
-        occurency = contains(temp, target);
-    }
-
-    return quantity;
-}
-
 
 int contains(std::string str, std::string target) {
     size_t str_size = str.size();
@@ -51,40 +32,26 @@ int contains(std::string str, std::string target) {
 }
 
 
-std::string **split(std::string str, std::string splitter) {
-    int substrings = ocurrencies(str, splitter);
+std::vector<std::string> split(const std::string &str, const std::string &splitter) {
+    std::vector<std::string> result;
+    size_t start = 0, end;
 
-    std::string **splt = new std::string *[substrings+2];
-
-    std::string temp {str};
-    int next = contains(str, splitter);
-    int pos {0};
-
-    while(next != -1) {
-        splt[pos] = new std::string(temp.substr(0, next));
-        pos++;
-
-        temp = temp.substr(next+splitter.size(), temp.size());
-
-        next = contains(temp, splitter);
+    while ((end = str.find(splitter, start)) != std::string::npos) {
+        result.push_back(str.substr(start, end - start));
+        start = end + splitter.size();
     }
 
-    splt[pos] = new std::string(temp);
-    splt[pos+1] = nullptr;
-
-    return splt;
+    result.push_back(str.substr(start));
+    return result;
 }
 
 
 bool is_in_interval(char letter, std::string interval) {
-    std::string **splt = split(interval, "-");
-    char min {splt[0][0][0]};
-    char max {splt[1][0][0]};
+    std::vector<std::string> splt = split(interval, "-");
+    char min {splt[0][0]};
+    char max {splt[1][0]};
 
     bool is_in = (letter >= min && letter <= max);
-    
-    for(size_t i {0}; splt[i]; i++) delete[] splt[i];
-    delete[] splt;
     
     return is_in;
 }
