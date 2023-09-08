@@ -6,6 +6,7 @@
 
 const int INVALID_STATE {-1};
 const int START_STATE {0};
+int cont {0};
 
 /**
  *  Gera os tokens do autômato
@@ -50,9 +51,12 @@ void gerar_tokens(const std::string &input) {
 
             i++;
         } catch(int erro) {
-            if(input[i] == '\n' and start_token == last_final_pos) { }
-            else if(erro == -1 and start_token == last_final_pos) {
-                std::cout << "ERRO" << std::endl;
+            if(last_final == -1) {
+                if(start_token == last_final_pos && input[i] == '\n') { }
+                else {
+                    if(cont) std::cout << "\n";
+                    std::cout << "ERRO";
+                }
             }
             else {
                 std::string token = input.substr(start_token, last_final_pos - start_token + 1);
@@ -61,7 +65,8 @@ void gerar_tokens(const std::string &input) {
 
                 if(classificacao_token.size()) token += " " + classificacao_token;
 
-                std::cout << token << std::endl;
+                if(cont) std::cout << "\n";
+                std::cout << token;
             }
 
             // Resetar parâmetros
@@ -70,6 +75,7 @@ void gerar_tokens(const std::string &input) {
             last_final_pos++;
             i = last_final_pos;
             start_token = last_final_pos;
+            cont = 1;
         }
     }
 }
