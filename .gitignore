@@ -11,4 +11,5 @@
 .vscode/
 Listas/
 Trabalho/
-./makefile
+makefile
+!/*/makefile
