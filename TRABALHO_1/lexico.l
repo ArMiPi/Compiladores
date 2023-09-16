@@ -31,32 +31,42 @@ struct  {if(++cont) printf("\n"); printf("STRUCT"); coluna += yyleng;}
     int lin = linha;
     int col = coluna;
 
-    char c = input();
+    coluna += 2;
 
-    while (c != '\0') {
+    int asterisk = 0;
+    int slash = 0;
+
+    char c;
+
+    while(1) {
+        c = input();
         coluna++;
 
-        if (c == '*' && (c = input()) == '/') {
-            coluna += 1;
-            break;
-        } else if (c == '/' && (c = input()) == '*') {
+        if(c == '/') {
+            // Checar se */
+            if(asterisk) break;
+
+            slash = 1;
+        } else if(c == '*') {
+            asterisk = 1;
+        } else if(c == '\0') {
             if(++cont) printf("\n");
-            printf("warning:%d:%d: '/*' within block comment", linha, coluna-1);
+            printf("error:lexical:%d:%d: unterminated comment", lin, col);
+            break;
+        } else {
+            if(asterisk && slash) {
+                if(++cont) printf("\n");
+                printf("warning:%d:%d: '/*' within block comment", linha, coluna-3);
+            }
 
-            coluna += 1;
+            if(c == '\n') {
+                linha++;
+                coluna = 1;
+            }
+
+            asterisk = 0;
+            slash = 0;
         }
-
-        if(c == '\n') {
-            linha++;
-            coluna = 1;
-        }
-
-        c = input();
-    }
-
-    if (c == '\0') {
-        if(++cont) printf("\n");
-        printf("error:lexical:%d:%d: unterminated comment", lin, col);
     }
 }
 "/"         {if(++cont) printf("\n"); printf("DIV"); coluna += yyleng;}
@@ -100,6 +110,16 @@ exit        {if(++cont) printf("\n"); printf("EXIT"); coluna += yyleng;}
 0[1-7][0-7]*        {if(++cont) printf("\n"); printf("NUM_OCTAL(%s)", yytext); coluna += yyleng;}
 0[xX][0-9A-Fa-f]+   {if(++cont) printf("\n"); printf("NUM_HEXA(%s)", yytext); coluna += yyleng;}
 [0-9]+              {if(++cont) printf("\n"); printf("NUM_INTEGER(%s)", yytext); coluna += yyleng;}
+\'\\.\' {
+    int size = yyleng;
+    char *str = yytext + 1;
+    str[size-2] = '\0';
+
+    if(++cont) printf("\n");
+    printf("CHARACTER(%s)", str);
+
+    coluna += yyleng;
+}
 \'.\' {
     int size = yyleng;
     char *str = yytext + 1;
@@ -110,7 +130,7 @@ exit        {if(++cont) printf("\n"); printf("EXIT"); coluna += yyleng;}
 
     coluna += yyleng;
 }
-\".*\" {
+\"(\\.|[^\"])*\" {
     int size = yyleng;
     char *str = yytext + 1;
     str[size-2] = '\0';
