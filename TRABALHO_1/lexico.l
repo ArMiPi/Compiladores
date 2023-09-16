@@ -138,7 +138,7 @@ exit        {if(++cont) printf("\n"); printf("EXIT"); coluna += yyleng;}
 
     coluna += yyleng;
 }
-[ ] { coluna++; }
+[ ]+ { coluna+= yyleng; }
 \n { linha++; coluna = 1; }
 . {
     if(++cont) printf("\n"); 
