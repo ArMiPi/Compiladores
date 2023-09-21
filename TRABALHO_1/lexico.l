@@ -110,7 +110,7 @@ exit        {if(++cont) printf("\n"); printf("EXIT"); coluna += yyleng;}
 0[1-7][0-7]*        {if(++cont) printf("\n"); printf("NUM_OCTAL(%s)", yytext); coluna += yyleng;}
 0[xX][0-9A-Fa-f]+   {if(++cont) printf("\n"); printf("NUM_HEXA(%s)", yytext); coluna += yyleng;}
 [0-9]+              {if(++cont) printf("\n"); printf("NUM_INTEGER(%s)", yytext); coluna += yyleng;}
-\'(\\.|.)?\' {
+\'(\\.|.)\' {
     int size = yyleng;
     char *str = yytext + 1;
     str[size-2] = '\0';
