@@ -1,5 +1,5 @@
 CC = gcc
-EXECUTAVEL = portugol
+EXECUTAVEL = lexico
 
 all:
 	flex $(EXECUTAVEL).l
@@ -33,7 +33,7 @@ compare:
 
 # [REMOVER]
 teste:
-	./$(EXECUTAVEL) < teste.txt > teste.por
+	./$(EXECUTAVEL) < teste.txt > ss.txt
 
 clear:
 	rm lex.yy.c

@@ -10,7 +10,7 @@
 *.txt
 .vscode/
 Listas/
-Trabalho/
+testes/
 makefile
 !/*/makefile
 *.pdf
