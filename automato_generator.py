@@ -60,17 +60,17 @@ def generate_matrix(alfabeto: list[str], estados: list[str]) -> list[tuple[str, 
 def generate_txt(alfabeto: list[str], estados: list[str], estados_finais: dict[str, str], transitions: list[tuple[str, ...]]) -> None:
     with open("automato_cpp.txt", "w") as file:
         alfbt = '", "'.join(alfabeto)
-        file.write(f'const std::string alfabeto [] {{"{alfbt}"}};\n')
+        file.write(f'const std::string alfabeto [{len(alfabeto)}] {{"{alfbt}"}};\n')
         
         stds = '", "'.join(estados)
-        file.write(f'\nconst std::string estados [] {{"{stds}"}};\n')
+        file.write(f'\nconst std::string estados [{len(estados)}] {{"{stds}"}};\n')
 
         file.write("\nconst std::map<std::string, std::string> estados_finais {\n")
         for key, value in estados_finais.items():
             file.write(f'\t{{"{key}", "{value}"}},\n')
         file.write('};\n')
 
-        file.write(f"\nconst std::string transicoes [][{len(alfabeto)}] {{\n")
+        file.write(f"\nconst std::string transicoes [{len(estados)}][{len(alfabeto)}] {{\n")
         file.write(f"//{' '*8}")
         for palavra in alfabeto:
             file.write(f"{palavra:^10}")
@@ -90,6 +90,15 @@ def generate_txt(alfabeto: list[str], estados: list[str], estados_finais: dict[s
             transicao = f'"{transicoes[qtd-1]}"'
             file.write(f'{transicao:^10}}},\n')
 
+        file.write("};\n")
+
+    with open("lexico_cpp.txt", "w") as file:
+        file.write("const int INVALID_STATE {-1};\n")
+        file.write("const int START_STATE {0};\n")
+        file.write("const std::map<std::string, int> tokens {\n")
+        for i, token in enumerate(estados_finais.values(), start=1):
+            token = f'"{token}"'
+            file.write(f'\t{{{token}, {i}}},\n')
         file.write("};\n")
 
 
