@@ -2,6 +2,8 @@
 #define AUTOMATO_H
 
 #include <string>
+#include <map>
+
 
 class Automato {
     public:
@@ -10,7 +12,7 @@ class Automato {
          *   
          *   Caso estado não exista em estados, será retornado -1.
         */
-        int get_index_estado(std::string estado);
+        static int get_index_estado(std::string estado);
 
 
         /**
@@ -18,19 +20,19 @@ class Automato {
          * 
          *   Caso palavra não exista em alfabeto, será retornado -1.
         */
-        int get_index_palavra(char palavra);
+        static int get_index_palavra(char palavra);
 
 
         /**
          *  Indica se o estado é final.
         */
-        bool is_final(int index_estado);
+        static bool is_final(int index_estado);
 
 
         /**
          *  Retorna a string que classifica o estado final.
         */
-        std::string get_classificacao_token(int index_estado);
+        static std::string get_classificacao_token(int index_estado);
 
 
         /**
@@ -38,8 +40,7 @@ class Automato {
          *  do estado indicado por index_estado após ler a palavra indicada
          *  por index_palavra.
         */
-        std::string get_transicao(int index_estado, int index_palavra);
-
+        static std::string get_transicao(int index_estado, int index_palavra);
 };
 
 #endif

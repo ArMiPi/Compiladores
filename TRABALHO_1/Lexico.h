@@ -7,13 +7,14 @@
 
 class Lexico {
     public:
-        Lexico(std::string input, Automato automato);
+        Lexico();
+
+        void setInput(std::string input);
 
         int gerar_token();
     
     private:
         std::string input;
-        Automato automato;
 };
 
 #endif

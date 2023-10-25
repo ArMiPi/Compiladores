@@ -1,13 +1,11 @@
-#include <map>
-
 #include "Automato.h"
 #include "string_utils.h"
 
 
 // Definição do Autômato
-const std::string alfabeto [] {"b", "d", "e", "f", "g", "h", "i", "l", "n", "p", "r", "s", "t", "0-9", "+", "-", "=", ";"};
+const std::string alfabeto [18] {"b", "d", "e", "f", "g", "h", "i", "l", "n", "p", "r", "s", "t", "0-9", "+", "-", "=", ";"};
 
-const std::string estados [] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"};
+const std::string estados [27] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"};
 
 const std::map<std::string, std::string> estados_finais {
 	{"3", "IF"},
@@ -21,7 +19,7 @@ const std::map<std::string, std::string> estados_finais {
 	{"27", "SEMI"},
 };
 
-const std::string transicoes [][18] {
+const std::string transicoes [27][18] {
 //            b         d         e         f         g         h         i         l         n         p         r         s         t        0-9        +         -         =         ;     
 /*  1  */{  "12",      "0",      "8",      "0",      "0",      "0",      "2",      "0",      "0",     "19",      "0",      "0",      "4",     "25",     "24",     "24",     "26",      "27"   },
 /*  2  */{   "0",      "0",      "0",      "3",      "0",      "0",      "0",      "0",      "0",      "0",      "0",      "0",      "0",      "0",      "0",      "0",      "0",      "0"    },
