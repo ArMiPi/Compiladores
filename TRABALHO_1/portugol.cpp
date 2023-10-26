@@ -4,6 +4,8 @@
 
 #include "Lexico.h"
 
+int cont {-1};
+
 int main() {
     std::string line;
     Lexico lex = Lexico();
@@ -17,12 +19,10 @@ int main() {
             token = lex.gerarToken();
 
             if(token == -2) {
-                
+                if(++cont) std::cout << "\n";
+                std::cout << lex.error();
             }
-            std::cout << token << " -> '" << lex.getText() << "'" << std::endl;
         }
-        std::cout << std::endl;
-        std::cout << std::endl;
         token = -1;
     }
 }

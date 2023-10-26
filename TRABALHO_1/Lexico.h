@@ -30,9 +30,9 @@ class Lexico {
         int gerarToken();
 
         /**
-         * Apresenta o erro Léxico identificado
+         * Retorna o erro Léxico identificado
         */
-        void error();
+        std::string error();
     
     private:
         std::string input {};

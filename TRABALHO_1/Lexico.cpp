@@ -40,8 +40,15 @@ std::string Lexico::getText() {
 }
 
 
-void Lexico::error() {
-	
+std::string Lexico::error() {
+	std::string erro = "ERRO LEXICO. Linha: " 
+						+ std::to_string(linha)
+						+ " Coluna: " + std::to_string(coluna)
+						+ " -> '" + text + "'";
+
+	coluna += text.length();
+
+	return erro;
 }
 
 
@@ -89,13 +96,12 @@ int Lexico::gerarToken() {
 				}
 			}
 			else {
-				std::string token = text;
-				
 				std::string classificacao_token = Automato::get_classificacao_token(last_final);
 
 				std::map<std::string, int>::const_iterator it = tokens.find(classificacao_token);
 
     			cod_token = it->second;
+				coluna += text.length();
 			}
 
 			// Resetar parâmetros
