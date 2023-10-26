@@ -1,6 +1,6 @@
 CC = g++
 EXEC = portugol
-OBJS = string_utils.cpp Automato.cpp
+OBJS = string_utils.cpp Automato.cpp Lexico.cpp
 FLAGS = -g -o
 
 all:
@@ -8,6 +8,9 @@ all:
 
 $(EXEC):
 	$(CC) $(OBJS) $(EXEC).cpp $(FLAGS) $(EXEC)
+
+teste:
+	./$(EXEC) < input.txt > saida.txt
 
 clear:
 	rm $(EXEC)
