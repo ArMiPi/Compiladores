@@ -23,7 +23,7 @@ class Lexico {
          * Retorna valores inteiros que correspondem aos tokens aceitos pelo léxico
          * 
          * Retornos especiais:
-         *  -1 -> Indica espaços e quebras de linha
+         *  -1 -> Indica fim do input sem '\0' encontrado
          *  0  -> Indica '\0'
          *  -2 -> Indica erro
         */

@@ -1,6 +1,6 @@
 CC = g++
 EXEC = l9e1
-OBJS = string_utils.cpp Automato.cpp Lexico.cpp
+OBJS = string_utils.cpp Automato.cpp Lexico.cpp Sintatico.cpp
 FLAGS = -g -o
 
 all:

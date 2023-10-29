@@ -111,8 +111,8 @@ int Lexico::gerarToken() {
 			i = last_final_pos;
 			start_token = last_final_pos;
 
-			return cod_token;
+			if(cod_token != -1) return cod_token;
 		}
 	}
-	return 0;
+	return -1;
 }

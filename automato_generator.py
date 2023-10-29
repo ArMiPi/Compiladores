@@ -102,7 +102,7 @@ def generate_txt(alfabeto: list[str], estados: list[str], estados_finais: dict[s
         file.write("};\n")
 
     with open("sintatico_cpp.txt", "w") as file:
-        file.write("int ")
+        file.write("const int ")
         
         variaveis = []
         for i, token in enumerate(estados_finais.values(), start=1):

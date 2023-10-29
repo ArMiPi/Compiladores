@@ -2,16 +2,19 @@
 #define SINTATICO_H
 
 #include <string>
+#include "Lexico.h"
 
 class Sintatico {
     public:
-        Sintatico();
+        Sintatico(Lexico lex);
 
         void advance();
 
         void eat(int t);
 
-        std::string error();
+        void setInput(std::string input);
+
+        void error();
 
         // FUNÇÕES ESPECÍFICAS PARA ESSE PROBLEMA
         void S();
@@ -19,6 +22,10 @@ class Sintatico {
         void L();
 
         void E();
+
+    private:
+        int token {};
+        Lexico lex {};
 };
 
 #endif
