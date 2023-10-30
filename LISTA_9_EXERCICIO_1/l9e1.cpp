@@ -3,7 +3,9 @@
 #include <list>
 
 #include "Lexico.h"
+#include "LexicoException.h"
 #include "Sintatico.h"
+#include "SintaticoException.h"
 
 int cont {-1};
 
@@ -21,6 +23,12 @@ int main() {
             sin.S();
             if(++cont) std::cout << "\n";
             std::cout << "CADEIA ACEITA";
-        } catch
+        } catch(LexicoException &leex) {
+            if(++cont) std::cout << "\n";
+            std::cout << leex.what();
+        } catch(SintaticoException siex) {
+            if(++cont) std::cout << "\n";
+            std::cout << siex.what();
+        }
     }
 }

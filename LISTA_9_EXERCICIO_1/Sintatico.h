@@ -26,6 +26,11 @@ class Sintatico {
     private:
         int token {};
         Lexico lex {};
+
+        struct ErrorControler {
+            int token_recebido;
+            std::string tokens_esperados;
+        } ERROR_CONTROLER;
 };
 
 #endif

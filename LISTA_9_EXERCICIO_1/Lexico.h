@@ -32,7 +32,7 @@ class Lexico {
         /**
          * Retorna o erro Léxico identificado
         */
-        std::string error();
+        void error();
     
     private:
         std::string input {};
