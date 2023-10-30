@@ -1,6 +1,7 @@
 #include <map>
 
 #include "Lexico.h"
+#include "LexicoException.h"
 
 
 const int INVALID_STATE {-1};
@@ -37,18 +38,6 @@ void Lexico::setInput(std::string input_str) {
 
 std::string Lexico::getText() {
 	return text;
-}
-
-
-std::string Lexico::error() {
-	std::string erro = "ERRO LEXICO. Linha: " 
-						+ std::to_string(linha)
-						+ " Coluna: " + std::to_string(coluna)
-						+ " -> '" + text + "'";
-
-	coluna += text.length();
-
-	return erro;
 }
 
 
@@ -111,8 +100,17 @@ int Lexico::gerarToken() {
 			i = last_final_pos;
 			start_token = last_final_pos;
 
-			return cod_token;
+			if(cod_token != -1) return cod_token;
 		}
 	}
 	return 0;
+}
+
+
+void Lexico::error() {
+	LexicoException leex = LexicoException(text, linha, coluna);
+
+	coluna += text.length();
+
+	throw leex;
 }

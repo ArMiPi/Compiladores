@@ -1,6 +1,9 @@
 CC = g++
 EXEC = portugol
-OBJS = string_utils.cpp Automato.cpp Lexico.cpp
+OBJS = string_utils.cpp \
+       Automato.cpp \
+	   Lexico.cpp LexicoException.cpp \
+	   Sintatico.cpp SintaticoException.cpp 
 FLAGS = -g -o
 
 all:
@@ -11,6 +14,12 @@ $(EXEC):
 
 teste:
 	./$(EXEC) < input.txt > saida.txt
+
+generate:
+	
+
+compare:
+	
 
 clear:
 	rm $(EXEC)
