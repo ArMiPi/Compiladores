@@ -111,7 +111,7 @@ def generate_txt(alfabeto: list[str], estados: list[str], estados_finais: dict[s
         variaveis = ', '.join(variaveis)
         file.write(f"{variaveis};\n")
 
-        file.write("\nconst std::map<int, std::string> tokens {\n")
+        file.write("const std::map<int, std::string> tokens {\n")
         for i, token in enumerate(estados_finais.values(), start=1):
             file.write("\t{")
             file.write(f'{i}, "{token.lower()}"')
