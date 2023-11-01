@@ -6,15 +6,13 @@
 
 class SintaticoException : std::exception {
     public:
-        SintaticoException(std::string token_recebido, std::string tokens_esperados);
-
-        SintaticoException();
+        SintaticoException(int linha, int coluna, std::string texto_incorreto);
 
         std::string what();
 
     private:
-        std::string token_recebido, tokens_esperados;
-        int type;
+        std::string texto_incorreto;
+        int linha, coluna;
 };
 
 

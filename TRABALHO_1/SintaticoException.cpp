@@ -1,26 +1,14 @@
 #include "SintaticoException.h"
 
-SintaticoException::SintaticoException(std::string token_recebido, std::string tokens_esperados) {
-    this->token_recebido = token_recebido;
-    this->tokens_esperados = tokens_esperados;
-    this->type = 1;
+SintaticoException::SintaticoException(int linha, int coluna, std::string texto_incorreto) {
+    this->linha = linha;
+    this->coluna = coluna;
+    this->texto_incorreto = texto_incorreto;
 }
 
-SintaticoException::SintaticoException() {
-    this->type = 2;
-}
 
 std::string SintaticoException::what() {
-    std::string retorno;
-    switch (type)
-    {
-        case 1:
-            return ("ERRO SINTATICO EM: "
-                + token_recebido + " ESPERADO: " 
-                + tokens_esperados);
-        case 2:
-            return "ERRO SINTATICO: CADEIA INCOMPLETA";
-        default:
-            return "ERRO SINTATICO: ERRO INESPERADO";
-    }
+    return ("ERRO DE SINTAXE. Linha: " + std::to_string(linha) + 
+            " Coluna: " + std::to_string(coluna) + 
+            " -> '" + texto_incorreto + "'");
 }
