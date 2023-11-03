@@ -2,7 +2,7 @@
 
 SintaticoException::SintaticoException(int linha, int coluna, std::string texto_incorreto) {
     this->linha = linha;
-    this->coluna = coluna;
+    this->coluna = coluna - texto_incorreto.length();
     this->texto_incorreto = texto_incorreto;
 }
 

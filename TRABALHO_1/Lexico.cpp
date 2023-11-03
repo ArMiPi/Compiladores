@@ -102,6 +102,16 @@ std::string Lexico::getText() {
 }
 
 
+int Lexico::getLinha() {
+	return linha;
+}
+
+
+int Lexico::getColuna() {
+	return coluna;
+}
+
+
 void Lexico::readMultiLineComment(int start) {
 	start_token = 0;
 	last_final_pos = 0;

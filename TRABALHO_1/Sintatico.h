@@ -17,20 +17,81 @@ class Sintatico {
         void error();
 
         // FUNÇÕES ESPECÍFICAS PARA ESSE PROBLEMA
-        void S();
+        void Programa();
 
-        void L();
+        void ProcedimentoFuncao();
 
-        void E();
+        void DeclaraProcedimento();
+
+        void DeclaraFuncao();
+
+        void Parametros();
+
+        void DeclaraParametros();
+
+        void BlocoVariaveis();
+
+        void Declaracoes();
+
+        void DeclaracoesL();
+
+        void DeclaraTipo();
+
+        void DeclaraVariaveis();
+
+        void DeclaraIdentificador();
+
+        void DeclaraIdentificadorL();
+
+        void VetorMatriz();
+
+        void Dimensao();
+
+        void DimensaoL();
+
+        void TipoBasico();
+
+        void BlocoComandos();
+
+        void ListaComandos();
+
+        void ListaComandosL();
+
+        void Comandos();
+
+        void ComandosL();
+
+        void ComandosS();
+
+        void ComandosP();
+
+        void Expressao();
+
+        void ExpressaoL();
+
+        void ExpressaoSimples();
+
+        void ExpressaoSimplesL();
+
+        void Termo();
+
+        void TermoL();
+
+        void Fator();
+
+        void FatorL();
+
+        void Variavel();
+
+        void VariavelL();
+
+        void ExprIter();
+
+        void ExprIterL();
 
     private:
         int token {};
         Lexico lex {};
-
-        struct ErrorControler {
-            int token_recebido;
-            std::string tokens_esperados;
-        } ERROR_CONTROLER;
 };
 
 #endif

@@ -10,20 +10,16 @@
 int main() {
     std::string line;
     Lexico lex = Lexico();
-    // Sintatico sin = Sintatico(lex);
+    Sintatico sin = Sintatico(lex);
 
+    int token {-1};
     // Leitura dos parâmetros
     try {
-        int token {-1};
         while(std::getline(std::cin, line)) {
             if(std::cin.good()) line += '\n';
-            lex.setInput(line);
-            token = -1;
-            while(token) {
-                token = lex.gerarToken();
-            }
-        }
-
+            sin.setInput(line);
+            sin.Programa();
+        } 
         std::cout << "PROGRAMA CORRETO.";
     } catch(LexicoException &leex) {
         std::cout << leex.what();

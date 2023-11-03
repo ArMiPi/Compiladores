@@ -18,6 +18,10 @@ class Lexico {
          * Retorna o texto que gerou o último token obtido
         */
         std::string getText();
+        
+        int getLinha();
+
+        int getColuna();
 
         /**
          * Retorna valores inteiros que correspondem aos tokens aceitos pelo léxico
