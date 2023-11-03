@@ -39,6 +39,11 @@ class Lexico {
         std::string text {};
         int start_token;
         int last_final_pos;
+        int linha {1}, coluna {1};
+
+        void getInput();
+        void readMultiLineComment(int start);
+        void consumeString(int start);
 };
 
 #endif

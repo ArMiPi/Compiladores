@@ -1,3 +1,5 @@
+#include <iostream>
+#include <algorithm>
 #include <map>
 
 #include "Lexico.h"
@@ -7,15 +9,63 @@
 const int INVALID_STATE {-1};
 const int START_STATE {0};
 const std::map<std::string, int> tokens {
-	{"IF", 1},
-	{"THEN", 2},
-	{"ELSE", 3},
-	{"BEGIN", 4},
-	{"END", 5},
-	{"PRINT", 6},
-	{"NUM", 7},
-	{"EQ", 8},
-	{"SEMI", 9},
+	{"identificador", 1},
+	{"numero_inteiro", 2},
+	{"numero_real", 3},
+	{"string", 4},
+	{"single_line_comment", 5},
+	{"multi_line_comment", 6},
+	{"algoritmo", 7},
+	{"inicio", 8},
+	{"fim", 9},
+	{"variaveis", 10},
+	{"inteiro", 11},
+	{"real", 12},
+	{"caractere", 13},
+	{"logico", 14},
+	{"vetor", 15},
+	{"matriz", 16},
+	{"tipo", 17},
+	{"funcao", 18},
+	{"procedimento", 19},
+	{"se", 20},
+	{"entao", 21},
+	{"senao", 22},
+	{"enquanto", 23},
+	{"faca", 24},
+	{"para", 25},
+	{"de", 26},
+	{"ate", 27},
+	{"passo", 28},
+	{"repita", 29},
+	{"leia", 30},
+	{"imprima", 31},
+	{"verdadeiro", 32},
+	{"falso", 33},
+	{"e", 34},
+	{"ou", 35},
+	{"nao", 36},
+	{"div", 37},
+	{";", 38},
+	{",", 39},
+	{":", 40},
+	{".", 41},
+	{"[", 42},
+	{"]", 43},
+	{"(", 44},
+	{")", 45},
+	{"=", 46},
+	{"<>", 47},
+	{">", 48},
+	{">=", 49},
+	{"<", 50},
+	{"<=", 51},
+	{"+", 52},
+	{"-", 53},
+	{"*", 54},
+	{"/", 55},
+	{"<-", 56},
+	{"delimitador", 57}
 };
 
 
@@ -29,15 +79,63 @@ Lexico::Lexico() {
 }
 
 
-void Lexico::setInput(std::string input_str) {
+void::Lexico::setInput(std::string input_str) {
 	input = input_str;
 	start_token = 0;
 	last_final_pos = 0;
 }
 
 
+void Lexico::getInput() {
+	std::getline(std::cin, input);
+	if(std::cin.good()) input += '\n';
+
+	start_token = 0;
+	last_final_pos = 0;
+	linha++;
+	coluna = 1;
+}
+
+
 std::string Lexico::getText() {
 	return text;
+}
+
+
+void Lexico::readMultiLineComment(int start) {
+	start_token = 0;
+	last_final_pos = 0;
+	while(true) {
+		for(int i {start}; i < input.size(); i++) {
+			if(input[i] == '}') {
+				input = input.substr(i, input.size());
+
+				coluna = i + 2;
+
+				return;
+			}
+		}
+
+		getInput();
+		start = 0;
+	}
+}
+
+
+void Lexico::consumeString(int start) {
+	start_token = 0;
+	last_final_pos = 0;
+
+	for(int i {start + 1}; i < input.size(); i++) {
+		if(input[i] == '"') {
+			text = input.substr(start, i);
+			input = input.substr(i, input.size());
+
+			coluna += i - start + 1;
+
+			return;
+		}
+	}
 }
 
 
@@ -81,7 +179,15 @@ int Lexico::gerarToken() {
 					}
 				}
 				else {
-					cod_token = -2;
+					if(input[i-1] == '{') {
+						readMultiLineComment(i);
+						cod_token = -1;
+					} else if(input[i-1] == '"'){
+						consumeString(i);
+						cod_token = 4;
+					} else {
+						cod_token = -2;
+					}
 				}
 			}
 			else {
@@ -90,6 +196,7 @@ int Lexico::gerarToken() {
 				std::map<std::string, int>::const_iterator it = tokens.find(classificacao_token);
 
     			cod_token = it->second;
+	
 				coluna += text.length();
 			}
 
@@ -100,6 +207,30 @@ int Lexico::gerarToken() {
 			i = last_final_pos;
 			start_token = last_final_pos;
 
+			switch (cod_token) {
+			// identificadores ou palavras reservadas
+				case 1:
+				case 57:
+					{
+						std::string temp = text;
+						std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
+						std::map<std::string, int>::const_iterator it = tokens.find(temp);
+
+    					if(it->second) cod_token = it->second;
+						break;
+					}
+				case 5:
+					getInput();
+					i = last_final_pos;
+
+					cod_token = -1;
+
+					break;
+				default:
+					break;
+			}
+
+			if(cod_token == -2) error();
 			if(cod_token != -1) return cod_token;
 		}
 	}
