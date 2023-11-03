@@ -183,6 +183,7 @@ void Sintatico::Programa() {
     }
 }
 
+
 void Sintatico::ProcedimentoFuncao() {
     switch (token) {
         // ProcedimentoFuncao -> DeclaraProcedimento ProcedimentoFuncao
@@ -737,11 +738,11 @@ void Sintatico::ExpressaoSimples() {
             break;
         // ExpressaoSimples -> - Termo
         case MENOS:
-            eat(MENOS); Termo();
+            eat(MENOS); Termo(); ExpressaoSimplesL();
             break;
         // ExpressaoSimples -> + Termo
         case MAIS:
-            eat(MAIS); Termo();
+            eat(MAIS); Termo(); ExpressaoSimplesL();
             break;
         default:
             error();
