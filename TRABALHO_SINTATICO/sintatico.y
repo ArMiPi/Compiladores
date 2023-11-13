@@ -6,7 +6,8 @@ extern int yylex();
 extern char* yytext;
 extern int linha;
 extern int coluna;
-extern char* yytext;
+extern int cont;
+extern char* currentLine;
 void yyerror(char *s);
 
 %}
@@ -354,7 +355,7 @@ Numero: NUM_INTEGER {}
 void yyerror(char *s){
 	int columnError = coluna-((int)strlen(yytext));
 	printf("error:syntax:%d:%d: %s\n", linha, columnError, yytext);
-	printf("%s", yytext);
+	printf("%s", currentLine);
 	int i;
 	for(i = 0; i < columnError-1; i++)
 		printf(" ");
@@ -364,6 +365,9 @@ void yyerror(char *s){
 
 int main(int argc, char **argv){
     yyparse();
+
+	if(++cont) printf("\n");
 	printf("SUCCESSFUL COMPILATION.");
-    return 0;
+    
+	return 0;
 }
