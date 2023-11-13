@@ -1,18 +1,18 @@
 %{
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-extern int yylex();
-extern char* yytext;
-extern int linha;
-extern int coluna;
-extern int cont;
-extern char* currentLine;
-void yyerror(char *s);
+	#include <stdio.h>
+	
+	extern int yylex();
+	extern char* yytext;
+	extern int linha;
+	extern int coluna;
+	extern int cont;
+	
+	char buffer[1024];
+	
+	void yyerror(char *s);
 
 %}
 
-/* declare tokens */
 %token VOID
 %token INT
 %token CHAR
@@ -352,15 +352,28 @@ Numero: NUM_INTEGER {}
 
 %%
 
-void yyerror(char *s){
-	int columnError = coluna-((int)strlen(yytext));
-	printf("error:syntax:%d:%d: %s\n", linha, columnError, yytext);
-	printf("%s", currentLine);
-	int i;
-	for(i = 0; i < columnError-1; i++)
+void yyerror(char *s) {
+    get_input(linha);
+
+    if (yychar == 0) {
+    	printf("error:syntax:%d:%d: expected declaration or statement at end of input\n%s\n", linha, coluna, buffer);
+    } else {
+        coluna -= strlen(yytext);
+        printf("error:syntax:%d:%d: %s\n%s", linha, coluna, yytext, buffer);
+    }
+
+	for(int i = 0; i < coluna -1; i++) {
 		printf(" ");
+	}
 	printf("^");
 	exit(0);
+}
+
+void get_input(int total_lines) {
+    fseek(stdin, 0, SEEK_SET);
+    for(int i = 0; i < total_lines; i++) {
+        fgets(buffer, 1000, stdin);
+    }
 }
 
 int main(int argc, char **argv){
