@@ -17,3 +17,5 @@ makefile
 teste.*
 script_teste_lexico/
 *.zip
+sintatico.tab.*
+lex.yy.c
