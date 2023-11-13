@@ -4,140 +4,146 @@
 #include <string.h>
 extern int yylex();
 extern char* yytext;
-extern int line;
-extern int column;
-extern char* current_line;
+extern int linha;
+extern int coluna;
+extern char* yytext;
 void yyerror(char *s);
 
 %}
 
 /* declare tokens */
-%token HASHTAG
-%token DEFINE
-%token IDENTIFIER
-%token TIMES
+%token VOID
+%token INT
+%token CHAR
+%token RETURN
+%token BREAK
+%token SWITCH
+%token CASE
+%token DEFAULT
+%token DO
+%token WHILE
+%token FOR
+%token IF
+%token ELSE
+%token TYPEDEF
+%token STRUCT
+%token PLUS
+%token MINUS
+%token MULTIPLY
+%token DIV
+%token REMAINDER
+%token INC
+%token DEC
+%token BITWISE_AND
+%token BITWISE_OR
+%token BITWISE_NOT
+%token BITWISE_XOR
+%token NOT
+%token LOGICAL_AND
+%token LOGICAL_OR
+%token EQUAL
+%token NOT_EQUAL
+%token LESS_THAN
+%token GREATER_THAN
+%token LESS_EQUAL
+%token GREATER_EQUAL
+%token R_SHIFT
+%token L_SHIFT
+%token ASSIGN
+%token ADD_ASSIGN
+%token MINUS_ASSIGN
+%token SEMICOLON
+%token COMMA
+%token COLON
+%token L_PAREN
+%token R_PAREN
 %token L_CURLY_BRACKET
 %token R_CURLY_BRACKET
 %token L_SQUARE_BRACKET
 %token R_SQUARE_BRACKET
-%token ASSIGN
-%token SEMICOLON
-%token COMMA
-%token L_PAREN
-%token R_PAREN
-%token INT
-%token CHAR
-%token VOID
-%token DO
-%token WHILE
-%token IF
-%token ELSE
-%token FOR
+%token TERNARY_CONDITIONAL
+%token NUMBER_SIGN
+%token POINTER
 %token PRINTF
-%token STRING
 %token SCANF
-%token AMPERSAND
+%token DEFINE
 %token EXIT
-%token RETURN
-%token PLUS_ASSIGN
-%token MINUS_ASSIGN
-%token QUESTION
-%token COLON
-%token OR
-%token AND
-%token BITWISE_OR
-%token BITWISE_XOR
-%token EQUAL
-%token NOT_EQUAL
-%token LESS_THAN
-%token LESS_EQUAL
-%token GREATER_THAN
-%token GREATER_EQUAL
-%token L_SHIFT
-%token R_SHIFT
-%token MINUS
-%token PLUS
-%token DIV
-%token MOD
-%token INC
-%token DEC
-%token BITWISE_COMP
-%token NOT
-%token CHARACTER
-%token NUM_INTEGER
-%token NUM_HEXA
 %token NUM_OCTAL
+%token NUM_HEXA
+%token NUM_INTEGER
+%token CHARACTER
+%token STRING
+%token IDENTIFIER
 %token OTHER
 
 %start Programa
 
 %%
 
-Programa: DecOuFunc DecOuFuncPrime {}
+Programa: DeclaracoesFuncao DeclaracoesFuncaoPrime {}
 ;
 
-DecOuFunc: Declaracoes {} 
-		 | Funcao 	   {}
+DeclaracoesFuncao: Declaracoes {}
+	| Funcao {}
 ;
 
-DecOuFuncPrime: DecOuFunc DecOuFuncPrime {} 
-		  | {} 
+DeclaracoesFuncaoPrime: DeclaracoesFuncao DeclaracoesFuncaoPrime {}
+	| {}
 ;
 
-
-Declaracoes: HASHTAG DEFINE IDENTIFIER Expressao {}
-		   | DeclaracaoVars {}
-           | DeclaracaoProt {}
+Declaracoes: NUMBER_SIGN DEFINE IDENTIFIER Expressao {}
+	| DeclaracaoVariaveis {}
+	| DeclaracaoPrototipo {}
 ;
 
-Funcao: Tipo VezesLoop IDENTIFIER Parametros L_CURLY_BRACKET FuncaoLoop Comandos R_CURLY_BRACKET {}
+Funcao: Tipo PointerIter IDENTIFIER Parametros L_CURLY_BRACKET FuncaoIter Comandos R_CURLY_BRACKET {}
 ;
 
-VezesLoop: TIMES VezesLoop {}
-		 | {}
+PointerIter: MULTIPLY PointerIter {}
+	| {}
 ;
 
-FuncaoLoop: DeclaracaoVars FuncaoLoop {} 
-		  | {}
+FuncaoIter: DeclaracaoVariaveis FuncaoIter {}
+	| {}
 ;
 
-DeclaracaoVars: Tipo DeclaracaoVarsLoop SEMICOLON {}
+DeclaracaoVariaveis: Tipo DeclaracaoVariaveisIter SEMICOLON {}
 ;
 
-DeclaracaoVarsLoop: VezesLoop IDENTIFIER ColcheteExpressaoLoop DeclaracaoVarsAtribuicao DeclaracaoVarsLoopPrime {}
+DeclaracaoVariaveisIter: PointerIter IDENTIFIER ExpressaoIter DeclaracaoVariaveisAtribuicao DeclaracaoVariaveisIterPrime {}
 ;
 
-ColcheteExpressaoLoop: L_SQUARE_BRACKET Expressao R_SQUARE_BRACKET ColcheteExpressaoLoop {} 
-					 | {}
+ExpressaoIter: L_SQUARE_BRACKET Expressao R_SQUARE_BRACKET ExpressaoIter {}
+	| {}
 ;
 
-DeclaracaoVarsAtribuicao: ASSIGN ExpressaoAtribuicao {} 
-						| {}
+DeclaracaoVariaveisAtribuicao: ASSIGN ExpressaoAtribuicao {}
+	| {}
 ;
 
-DeclaracaoVarsLoopPrime: COMMA DeclaracaoVarsLoop {}
-				   | {}
+DeclaracaoVariaveisIterPrime: COMMA DeclaracaoVariaveisIter {}
+	| {}
 ;
 
-DeclaracaoProt: Tipo VezesLoop IDENTIFIER Parametros SEMICOLON {}
+DeclaracaoPrototipo: Tipo PointerIter IDENTIFIER Parametros SEMICOLON {}
 ;
 
-Parametros: L_PAREN ParametrosOpLoop R_PAREN {}
+Parametros: L_PAREN ParametrosOpIter R_PAREN {}
 ;
 
-ParametrosOpLoop: ParametrosLoop {} 
-			    | {}
+ParametrosOpIter: ParametrosIter {}
+	| {}
 ;
 
-ParametrosLoop: Tipo VezesLoop IDENTIFIER ColcheteExpressaoLoop ParametrosLoopPrime {}
+ParametrosIter: Tipo PointerIter IDENTIFIER ExpressaoIter ParametrosIterPrime {}
 ;
 
-ParametrosLoopPrime: COMMA ParametrosLoop {}
-			   | {}
+ParametrosIterPrime: COMMA ParametrosIter {}
+	| {}
 ;
 
-Tipo: INT {} 
-	| CHAR {} 
+Tipo: INT {}
+	| CHAR {}
 	| VOID {}
 ;
 
@@ -147,204 +153,208 @@ Bloco: L_CURLY_BRACKET Comandos R_CURLY_BRACKET {}
 Comandos: ListaComandos ComandosPrime {}
 ;
 
-ComandosPrime: ListaComandos ComandosPrime {} 
-		 | {}
+ComandosPrime: ListaComandos ComandosPrime {}
+	| {}
 ;
 
 ListaComandos: DO Bloco WHILE L_PAREN Expressao R_PAREN SEMICOLON {}
-			 | IF L_PAREN Expressao R_PAREN Bloco OpElse {}
-			 | WHILE L_PAREN Expressao R_PAREN Bloco {}       
-			 | FOR L_PAREN OpExpressao SEMICOLON OpExpressao SEMICOLON OpExpressao R_PAREN Bloco {} 
-			 | PRINTF L_PAREN STRING OpVirgulaExpressao R_PAREN SEMICOLON {}
-			 | SCANF L_PAREN STRING COMMA AMPERSAND IDENTIFIER R_PAREN SEMICOLON {}  
-			 | EXIT L_PAREN Expressao R_PAREN SEMICOLON {} 
-			 | RETURN OpExpressao SEMICOLON {} 
-			 | Expressao SEMICOLON {}          
-             | SEMICOLON {} 
-			 | Bloco {}
+	| IF L_PAREN Expressao R_PAREN Bloco OpElse {}
+	| WHILE L_PAREN Expressao R_PAREN Bloco {}
+	| FOR L_PAREN OpExpressao SEMICOLON OpExpressao SEMICOLON OpExpressao R_PAREN Bloco {}
+	| PRINTF L_PAREN STRING OpVirgulaExpressao R_PAREN SEMICOLON {}
+	| SCANF L_PAREN STRING COMMA BITWISE_AND IDENTIFIER R_PAREN SEMICOLON {}
+	| EXIT L_PAREN Expressao R_PAREN SEMICOLON {}
+	| RETURN OpExpressao SEMICOLON {}
+	| Expressao SEMICOLON {}
+	| SEMICOLON {}
+	| Bloco {}
 ;
 
-OpElse: ELSE Bloco {} 
-	  | {}
+OpElse: ELSE Bloco {}
+	| {}
 ;
 
-OpExpressao: Expressao {} 
-		   | {}
+OpExpressao: Expressao {}
+	| {}
 ;
 
-OpVirgulaExpressao: COMMA Expressao {} 
-				  | {}
+OpVirgulaExpressao: COMMA Expressao {}
+	| {}
 ;
 
 Expressao: ExpressaoAtribuicao ExpressaoPrime {}
 ;
 
-ExpressaoPrime: COMMA Expressao {} 
-		  | {}
+ExpressaoPrime: COMMA Expressao {}
+	| {}
 ;
 
 ExpressaoAtribuicao: ExpressaoCondicional {}
-				   | ExpressaoUnaria AtribuicaoOperador ExpressaoAtribuicao {} 
+	| ExpressaoUnaria AtribuicaoOperador ExpressaoAtribuicao {}
 ;
 
-AtribuicaoOperador: ASSIGN {} 
-			      | PLUS_ASSIGN {} 
-				  | MINUS_ASSIGN {}
+AtribuicaoOperador: ASSIGN {}
+	| ADD_ASSIGN {}
+	| MINUS_ASSIGN {}
 ;
 
 ExpressaoCondicional: ExpressaoOrLogico ExpressaoCondicionalPrime {}
 ;
 
-ExpressaoCondicionalPrime: QUESTION Expressao COLON ExpressaoCondicional {} 
-					 | {} 
+ExpressaoCondicionalPrime: TERNARY_CONDITIONAL Expressao COLON ExpressaoCondicional {}
+	| {}
 ;
 
 ExpressaoOrLogico: ExpressaoAndLogico ExpressaoOrLogicoPrime {}
 ;
-ExpressaoOrLogicoPrime: OR ExpressaoOrLogico {}
-				  | {}
+
+ExpressaoOrLogicoPrime: LOGICAL_OR ExpressaoOrLogico {}
+	| {}
 ;
 
 ExpressaoAndLogico: ExpressaoOr ExpressaoAndLogicoPrime {}
 ;
 
-ExpressaoAndLogicoPrime: AND ExpressaoAndLogico {} 
-			       | {}
+ExpressaoAndLogicoPrime: LOGICAL_AND ExpressaoAndLogico {}
+	| {}
 ;
 
 ExpressaoOr: ExpressaoXor ExpressaoOrPrime {}
 ;
 
-ExpressaoOrPrime: BITWISE_OR ExpressaoOr 
-			| {}
+ExpressaoOrPrime: BITWISE_OR ExpressaoOr {}
+	| {}
 ;
 
 ExpressaoXor: ExpressaoAnd ExpressaoXorPrime {}
 ;
 
 ExpressaoXorPrime: BITWISE_XOR ExpressaoXor {}
-		     | {}
+	| {}
 ;
 
 ExpressaoAnd: ExpressaoIgualdade ExpressaoAndPrime {}
 ;
 
-ExpressaoAndPrime: AMPERSAND ExpressaoAnd {}
-			 | {}
+ExpressaoAndPrime: BITWISE_AND ExpressaoAnd {}
+	| {}
 ;
-
-
 
 ExpressaoIgualdade: ExpressaoRelacional ExpressaoIgualdadePrime {}
 ;
+
 ExpressaoIgualdadePrime: IgualdadeOperador ExpressaoIgualdade {}
-			       | {}
-;
-IgualdadeOperador: EQUAL {} 
-				 | NOT_EQUAL {}
+	| {}
 ;
 
+IgualdadeOperador: EQUAL {}
+	| NOT_EQUAL {}
+;
 
 ExpressaoRelacional: ExpressaoShift ExpressaoRelacionalPrime {}
 ;
-ExpressaoRelacionalPrime: RelacionalOperador ExpressaoRelacional {} 
-				    | {}
-;
-RelacionalOperador: LESS_THAN {}
-				  | LESS_EQUAL {} 
-				  | GREATER_THAN {} 
-				  | GREATER_EQUAL {}
+
+ExpressaoRelacionalPrime: OperadorRelacional ExpressaoRelacional {}
+	| {}
 ;
 
+OperadorRelacional: LESS_THAN {}
+	| LESS_EQUAL {}
+	| GREATER_THAN {}
+	| GREATER_EQUAL {}
+;
 
 ExpressaoShift: ExpressaoAditiva ExpressaoShiftPrime {}
 ;
-ExpressaoShiftPrime: ShiftOperador ExpressaoShift {}
-			   | {}
-;
-ShiftOperador: L_SHIFT {} 
-			 | R_SHIFT {}
+
+ExpressaoShiftPrime: Shift ExpressaoShift {}
+	| {}
 ;
 
+Shift:  L_SHIFT {}
+	| R_SHIFT {}
+;
 
 ExpressaoAditiva: ExpressaoMultiplicativa ExpressaoAditivaPrime {}
 ;
-ExpressaoAditivaPrime: AdicaoOperador ExpressaoAditiva {} 
-				 | {}
-;
-AdicaoOperador: MINUS {}
-			  | PLUS {}
+
+ExpressaoAditivaPrime: MaisMenos ExpressaoAditiva {}
+	| {}
 ;
 
+MaisMenos: PLUS {}
+	| MINUS {}
+;
 
 ExpressaoMultiplicativa: ExpressaoCast ExpressaoMultiplicativaPrime {}
 ;
-ExpressaoMultiplicativaPrime: MultOperador ExpressaoMultiplicativa {}
-					    | {}
-;
-MultOperador: TIMES {}
-			| DIV {} 
-			| MOD {}
+
+ExpressaoMultiplicativaPrime: Multiplicadores ExpressaoMultiplicativa {}
+	| {}
 ;
 
-
-ExpressaoCast: ExpressaoUnaria {} 
-			 | L_PAREN Tipo VezesLoop R_PAREN ExpressaoCast {}
+Multiplicadores: MULTIPLY {}
+	| DIV {}
+	| REMAINDER {}
 ;
 
-ExpressaoUnaria: ExpressaoPosFixa {} 
-			   | INC ExpressaoUnaria {} 
-			   | DEC ExpressaoUnaria {} 
-			   | UnarioOperador ExpressaoCast {}
+ExpressaoCast: ExpressaoUnaria {}
+	| L_PAREN Tipo PointerIter R_PAREN ExpressaoCast {}
 ;
 
-UnarioOperador: AMPERSAND {} 
-			  | TIMES {} 
-			  | PLUS {} 
-			  | MINUS {} 
-			  | BITWISE_COMP {} 
-			  | NOT {}
+ExpressaoUnaria: ExpressaoPosFixa {}
+	| INC ExpressaoUnaria {}
+	| DEC ExpressaoUnaria {}
+	| OperadorUnario ExpressaoCast {}
 ;
 
-ExpressaoPosFixa: ExpressaoPrimaria {} 
-			    | ExpressaoPosFixa ExpressaoPosFixaPrime {}
+OperadorUnario: BITWISE_AND {}
+	| MULTIPLY {}
+	| PLUS {}
+	| MINUS {}
+	| BITWISE_NOT {}
+	| NOT {}
 ;
 
-ExpressaoPosFixaPrime: L_SQUARE_BRACKET Expressao R_SQUARE_BRACKET {} 
-			     | INC {}
-				 | DEC {}
-				 | L_PAREN OpExpressaoAtribuicaoLoop R_PAREN {}
+ExpressaoPosFixa: ExpressaoPrimaria {}
+	| ExpressaoPosFixa ExpressaoPosFixaPrime {}
 ;
 
-OpExpressaoAtribuicaoLoop: ExpressaoAtribuicaoLoop {} 
-					     | {}
+ExpressaoPosFixaPrime: L_SQUARE_BRACKET Expressao R_SQUARE_BRACKET {}
+	| INC {}
+	| DEC {}
+	| L_PAREN OpExpressaoAtribuicaoIter R_PAREN {}
 ;
 
-ExpressaoAtribuicaoLoop: ExpressaoAtribuicao ExpressaoAtribuicaoLoopPrime {}
+OpExpressaoAtribuicaoIter: ExpressaoAtribuicaoIter {}
+	| {}
 ;
 
-ExpressaoAtribuicaoLoopPrime: COMMA ExpressaoAtribuicaoLoop {}
-					    | {}
+ExpressaoAtribuicaoIter: ExpressaoAtribuicao ExpressaoAtribuicaoIterPrime {}
 ;
 
-ExpressaoPrimaria: IDENTIFIER {} 
-				 | Numero {} 
-				 | CHARACTER {} 
-				 | STRING {} 
-				 | L_PAREN Expressao R_PAREN {}
+ExpressaoAtribuicaoIterPrime: COMMA ExpressaoAtribuicaoIter {}
+	| {}
 ;
 
-Numero: NUM_INTEGER {} 
-	  | NUM_HEXA {} 
-	  | NUM_OCTAL {}
+ExpressaoPrimaria: IDENTIFIER {}
+	| Numero {}
+	| CHARACTER {}
+	| STRING {}
+	| L_PAREN Expressao R_PAREN {}
+;
+
+Numero: NUM_INTEGER {}
+	| NUM_HEXA {}
+	| NUM_OCTAL {}
 ;
 
 %%
 
 void yyerror(char *s){
-	int columnError = column-((int)strlen(yytext));
-	printf("error:syntax:%d:%d: %s\n", line, columnError, yytext);
-	printf("%s", current_line);
+	int columnError = coluna-((int)strlen(yytext));
+	printf("error:syntax:%d:%d: %s\n", linha, columnError, yytext);
+	printf("%s", yytext);
 	int i;
 	for(i = 0; i < columnError-1; i++)
 		printf(" ");

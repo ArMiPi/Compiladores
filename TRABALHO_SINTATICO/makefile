@@ -1,12 +1,15 @@
-CC = gcc
-LEXICO = lexico.l
-SINTATICO = sintatico.y
-EXECUTAVEL = sintatico
+LEX=flex
+YY=bison
+CC=gcc
+BIN = sintatico
+L_SOURCE = lexico.l
+Y_SOURCE = sintatico.y
+CFLAGS = -std=c99 -I. -w
 
-all:
-	flex $(LEXICO)
-	bison -d $(SINTATICO)
-	$(CC) *.c -std=c99 -I. -w –o $(EXECUTAVEL)
+$(BIN): $(L_SOURCE) $(Y_SOURCE)
+	$(LEX) $(L_SOURCE)
+	$(YY) -d $(Y_SOURCE)
+	$(CC) *.c $(CFLAGS) -o $(BIN)
 
 # [REMOVER]
 exec:
@@ -39,5 +42,7 @@ teste:
 	./$(EXECUTAVEL) < teste.txt > ss.txt
 
 clear:
-	rm lex.yy.c
 	rm $(EXECUTAVEL)
+	rm lex.yy.c
+	rm sintatico.tab.*
+	

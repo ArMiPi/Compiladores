@@ -74,9 +74,9 @@
 #include <string.h>
 extern int yylex();
 extern char* yytext;
-extern int line;
-extern int column;
-extern char* current_line;
+extern int linha;
+extern int coluna;
+extern char* yytext;
 void yyerror(char *s);
 
 
@@ -111,129 +111,136 @@ enum yysymbol_kind_t
   YYSYMBOL_YYEOF = 0,                      /* "end of file"  */
   YYSYMBOL_YYerror = 1,                    /* error  */
   YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
-  YYSYMBOL_HASHTAG = 3,                    /* HASHTAG  */
-  YYSYMBOL_DEFINE = 4,                     /* DEFINE  */
-  YYSYMBOL_IDENTIFIER = 5,                 /* IDENTIFIER  */
-  YYSYMBOL_TIMES = 6,                      /* TIMES  */
-  YYSYMBOL_L_CURLY_BRACKET = 7,            /* L_CURLY_BRACKET  */
-  YYSYMBOL_R_CURLY_BRACKET = 8,            /* R_CURLY_BRACKET  */
-  YYSYMBOL_L_SQUARE_BRACKET = 9,           /* L_SQUARE_BRACKET  */
-  YYSYMBOL_R_SQUARE_BRACKET = 10,          /* R_SQUARE_BRACKET  */
-  YYSYMBOL_ASSIGN = 11,                    /* ASSIGN  */
-  YYSYMBOL_SEMICOLON = 12,                 /* SEMICOLON  */
-  YYSYMBOL_COMMA = 13,                     /* COMMA  */
-  YYSYMBOL_L_PAREN = 14,                   /* L_PAREN  */
-  YYSYMBOL_R_PAREN = 15,                   /* R_PAREN  */
-  YYSYMBOL_INT = 16,                       /* INT  */
-  YYSYMBOL_CHAR = 17,                      /* CHAR  */
-  YYSYMBOL_VOID = 18,                      /* VOID  */
-  YYSYMBOL_DO = 19,                        /* DO  */
-  YYSYMBOL_WHILE = 20,                     /* WHILE  */
-  YYSYMBOL_IF = 21,                        /* IF  */
-  YYSYMBOL_ELSE = 22,                      /* ELSE  */
-  YYSYMBOL_FOR = 23,                       /* FOR  */
-  YYSYMBOL_PRINTF = 24,                    /* PRINTF  */
-  YYSYMBOL_STRING = 25,                    /* STRING  */
-  YYSYMBOL_SCANF = 26,                     /* SCANF  */
-  YYSYMBOL_AMPERSAND = 27,                 /* AMPERSAND  */
-  YYSYMBOL_EXIT = 28,                      /* EXIT  */
-  YYSYMBOL_RETURN = 29,                    /* RETURN  */
-  YYSYMBOL_PLUS_ASSIGN = 30,               /* PLUS_ASSIGN  */
-  YYSYMBOL_MINUS_ASSIGN = 31,              /* MINUS_ASSIGN  */
-  YYSYMBOL_QUESTION = 32,                  /* QUESTION  */
-  YYSYMBOL_COLON = 33,                     /* COLON  */
-  YYSYMBOL_OR = 34,                        /* OR  */
-  YYSYMBOL_AND = 35,                       /* AND  */
-  YYSYMBOL_BITWISE_OR = 36,                /* BITWISE_OR  */
-  YYSYMBOL_BITWISE_XOR = 37,               /* BITWISE_XOR  */
-  YYSYMBOL_EQUAL = 38,                     /* EQUAL  */
-  YYSYMBOL_NOT_EQUAL = 39,                 /* NOT_EQUAL  */
-  YYSYMBOL_LESS_THAN = 40,                 /* LESS_THAN  */
-  YYSYMBOL_LESS_EQUAL = 41,                /* LESS_EQUAL  */
-  YYSYMBOL_GREATER_THAN = 42,              /* GREATER_THAN  */
-  YYSYMBOL_GREATER_EQUAL = 43,             /* GREATER_EQUAL  */
-  YYSYMBOL_L_SHIFT = 44,                   /* L_SHIFT  */
-  YYSYMBOL_R_SHIFT = 45,                   /* R_SHIFT  */
-  YYSYMBOL_MINUS = 46,                     /* MINUS  */
-  YYSYMBOL_PLUS = 47,                      /* PLUS  */
-  YYSYMBOL_DIV = 48,                       /* DIV  */
-  YYSYMBOL_MOD = 49,                       /* MOD  */
-  YYSYMBOL_INC = 50,                       /* INC  */
-  YYSYMBOL_DEC = 51,                       /* DEC  */
-  YYSYMBOL_BITWISE_COMP = 52,              /* BITWISE_COMP  */
-  YYSYMBOL_NOT = 53,                       /* NOT  */
-  YYSYMBOL_CHARACTER = 54,                 /* CHARACTER  */
-  YYSYMBOL_NUM_INTEGER = 55,               /* NUM_INTEGER  */
-  YYSYMBOL_NUM_HEXA = 56,                  /* NUM_HEXA  */
-  YYSYMBOL_NUM_OCTAL = 57,                 /* NUM_OCTAL  */
-  YYSYMBOL_OTHER = 58,                     /* OTHER  */
-  YYSYMBOL_YYACCEPT = 59,                  /* $accept  */
-  YYSYMBOL_Programa = 60,                  /* Programa  */
-  YYSYMBOL_DecOuFunc = 61,                 /* DecOuFunc  */
-  YYSYMBOL_DecOuFuncPrime = 62,            /* DecOuFuncPrime  */
-  YYSYMBOL_Declaracoes = 63,               /* Declaracoes  */
-  YYSYMBOL_Funcao = 64,                    /* Funcao  */
-  YYSYMBOL_VezesLoop = 65,                 /* VezesLoop  */
-  YYSYMBOL_FuncaoLoop = 66,                /* FuncaoLoop  */
-  YYSYMBOL_DeclaracaoVars = 67,            /* DeclaracaoVars  */
-  YYSYMBOL_DeclaracaoVarsLoop = 68,        /* DeclaracaoVarsLoop  */
-  YYSYMBOL_ColcheteExpressaoLoop = 69,     /* ColcheteExpressaoLoop  */
-  YYSYMBOL_DeclaracaoVarsAtribuicao = 70,  /* DeclaracaoVarsAtribuicao  */
-  YYSYMBOL_DeclaracaoVarsLoopPrime = 71,   /* DeclaracaoVarsLoopPrime  */
-  YYSYMBOL_DeclaracaoProt = 72,            /* DeclaracaoProt  */
-  YYSYMBOL_Parametros = 73,                /* Parametros  */
-  YYSYMBOL_ParametrosOpLoop = 74,          /* ParametrosOpLoop  */
-  YYSYMBOL_ParametrosLoop = 75,            /* ParametrosLoop  */
-  YYSYMBOL_ParametrosLoopPrime = 76,       /* ParametrosLoopPrime  */
-  YYSYMBOL_Tipo = 77,                      /* Tipo  */
-  YYSYMBOL_Bloco = 78,                     /* Bloco  */
-  YYSYMBOL_Comandos = 79,                  /* Comandos  */
-  YYSYMBOL_ComandosPrime = 80,             /* ComandosPrime  */
-  YYSYMBOL_ListaComandos = 81,             /* ListaComandos  */
-  YYSYMBOL_OpElse = 82,                    /* OpElse  */
-  YYSYMBOL_OpExpressao = 83,               /* OpExpressao  */
-  YYSYMBOL_OpVirgulaExpressao = 84,        /* OpVirgulaExpressao  */
-  YYSYMBOL_Expressao = 85,                 /* Expressao  */
-  YYSYMBOL_ExpressaoPrime = 86,            /* ExpressaoPrime  */
-  YYSYMBOL_ExpressaoAtribuicao = 87,       /* ExpressaoAtribuicao  */
-  YYSYMBOL_AtribuicaoOperador = 88,        /* AtribuicaoOperador  */
-  YYSYMBOL_ExpressaoCondicional = 89,      /* ExpressaoCondicional  */
-  YYSYMBOL_ExpressaoCondicionalPrime = 90, /* ExpressaoCondicionalPrime  */
-  YYSYMBOL_ExpressaoOrLogico = 91,         /* ExpressaoOrLogico  */
-  YYSYMBOL_ExpressaoOrLogicoPrime = 92,    /* ExpressaoOrLogicoPrime  */
-  YYSYMBOL_ExpressaoAndLogico = 93,        /* ExpressaoAndLogico  */
-  YYSYMBOL_ExpressaoAndLogicoPrime = 94,   /* ExpressaoAndLogicoPrime  */
-  YYSYMBOL_ExpressaoOr = 95,               /* ExpressaoOr  */
-  YYSYMBOL_ExpressaoOrPrime = 96,          /* ExpressaoOrPrime  */
-  YYSYMBOL_ExpressaoXor = 97,              /* ExpressaoXor  */
-  YYSYMBOL_ExpressaoXorPrime = 98,         /* ExpressaoXorPrime  */
-  YYSYMBOL_ExpressaoAnd = 99,              /* ExpressaoAnd  */
-  YYSYMBOL_ExpressaoAndPrime = 100,        /* ExpressaoAndPrime  */
-  YYSYMBOL_ExpressaoIgualdade = 101,       /* ExpressaoIgualdade  */
-  YYSYMBOL_ExpressaoIgualdadePrime = 102,  /* ExpressaoIgualdadePrime  */
-  YYSYMBOL_IgualdadeOperador = 103,        /* IgualdadeOperador  */
-  YYSYMBOL_ExpressaoRelacional = 104,      /* ExpressaoRelacional  */
-  YYSYMBOL_ExpressaoRelacionalPrime = 105, /* ExpressaoRelacionalPrime  */
-  YYSYMBOL_RelacionalOperador = 106,       /* RelacionalOperador  */
-  YYSYMBOL_ExpressaoShift = 107,           /* ExpressaoShift  */
-  YYSYMBOL_ExpressaoShiftPrime = 108,      /* ExpressaoShiftPrime  */
-  YYSYMBOL_ShiftOperador = 109,            /* ShiftOperador  */
-  YYSYMBOL_ExpressaoAditiva = 110,         /* ExpressaoAditiva  */
-  YYSYMBOL_ExpressaoAditivaPrime = 111,    /* ExpressaoAditivaPrime  */
-  YYSYMBOL_AdicaoOperador = 112,           /* AdicaoOperador  */
-  YYSYMBOL_ExpressaoMultiplicativa = 113,  /* ExpressaoMultiplicativa  */
-  YYSYMBOL_ExpressaoMultiplicativaPrime = 114, /* ExpressaoMultiplicativaPrime  */
-  YYSYMBOL_MultOperador = 115,             /* MultOperador  */
-  YYSYMBOL_ExpressaoCast = 116,            /* ExpressaoCast  */
-  YYSYMBOL_ExpressaoUnaria = 117,          /* ExpressaoUnaria  */
-  YYSYMBOL_UnarioOperador = 118,           /* UnarioOperador  */
-  YYSYMBOL_ExpressaoPosFixa = 119,         /* ExpressaoPosFixa  */
-  YYSYMBOL_ExpressaoPosFixaPrime = 120,    /* ExpressaoPosFixaPrime  */
-  YYSYMBOL_OpExpressaoAtribuicaoLoop = 121, /* OpExpressaoAtribuicaoLoop  */
-  YYSYMBOL_ExpressaoAtribuicaoLoop = 122,  /* ExpressaoAtribuicaoLoop  */
-  YYSYMBOL_ExpressaoAtribuicaoLoopPrime = 123, /* ExpressaoAtribuicaoLoopPrime  */
-  YYSYMBOL_ExpressaoPrimaria = 124,        /* ExpressaoPrimaria  */
-  YYSYMBOL_Numero = 125                    /* Numero  */
+  YYSYMBOL_VOID = 3,                       /* VOID  */
+  YYSYMBOL_INT = 4,                        /* INT  */
+  YYSYMBOL_CHAR = 5,                       /* CHAR  */
+  YYSYMBOL_RETURN = 6,                     /* RETURN  */
+  YYSYMBOL_BREAK = 7,                      /* BREAK  */
+  YYSYMBOL_SWITCH = 8,                     /* SWITCH  */
+  YYSYMBOL_CASE = 9,                       /* CASE  */
+  YYSYMBOL_DEFAULT = 10,                   /* DEFAULT  */
+  YYSYMBOL_DO = 11,                        /* DO  */
+  YYSYMBOL_WHILE = 12,                     /* WHILE  */
+  YYSYMBOL_FOR = 13,                       /* FOR  */
+  YYSYMBOL_IF = 14,                        /* IF  */
+  YYSYMBOL_ELSE = 15,                      /* ELSE  */
+  YYSYMBOL_TYPEDEF = 16,                   /* TYPEDEF  */
+  YYSYMBOL_STRUCT = 17,                    /* STRUCT  */
+  YYSYMBOL_PLUS = 18,                      /* PLUS  */
+  YYSYMBOL_MINUS = 19,                     /* MINUS  */
+  YYSYMBOL_MULTIPLY = 20,                  /* MULTIPLY  */
+  YYSYMBOL_DIV = 21,                       /* DIV  */
+  YYSYMBOL_REMAINDER = 22,                 /* REMAINDER  */
+  YYSYMBOL_INC = 23,                       /* INC  */
+  YYSYMBOL_DEC = 24,                       /* DEC  */
+  YYSYMBOL_BITWISE_AND = 25,               /* BITWISE_AND  */
+  YYSYMBOL_BITWISE_OR = 26,                /* BITWISE_OR  */
+  YYSYMBOL_BITWISE_NOT = 27,               /* BITWISE_NOT  */
+  YYSYMBOL_BITWISE_XOR = 28,               /* BITWISE_XOR  */
+  YYSYMBOL_NOT = 29,                       /* NOT  */
+  YYSYMBOL_LOGICAL_AND = 30,               /* LOGICAL_AND  */
+  YYSYMBOL_LOGICAL_OR = 31,                /* LOGICAL_OR  */
+  YYSYMBOL_EQUAL = 32,                     /* EQUAL  */
+  YYSYMBOL_NOT_EQUAL = 33,                 /* NOT_EQUAL  */
+  YYSYMBOL_LESS_THAN = 34,                 /* LESS_THAN  */
+  YYSYMBOL_GREATER_THAN = 35,              /* GREATER_THAN  */
+  YYSYMBOL_LESS_EQUAL = 36,                /* LESS_EQUAL  */
+  YYSYMBOL_GREATER_EQUAL = 37,             /* GREATER_EQUAL  */
+  YYSYMBOL_R_SHIFT = 38,                   /* R_SHIFT  */
+  YYSYMBOL_L_SHIFT = 39,                   /* L_SHIFT  */
+  YYSYMBOL_ASSIGN = 40,                    /* ASSIGN  */
+  YYSYMBOL_ADD_ASSIGN = 41,                /* ADD_ASSIGN  */
+  YYSYMBOL_MINUS_ASSIGN = 42,              /* MINUS_ASSIGN  */
+  YYSYMBOL_SEMICOLON = 43,                 /* SEMICOLON  */
+  YYSYMBOL_COMMA = 44,                     /* COMMA  */
+  YYSYMBOL_COLON = 45,                     /* COLON  */
+  YYSYMBOL_L_PAREN = 46,                   /* L_PAREN  */
+  YYSYMBOL_R_PAREN = 47,                   /* R_PAREN  */
+  YYSYMBOL_L_CURLY_BRACKET = 48,           /* L_CURLY_BRACKET  */
+  YYSYMBOL_R_CURLY_BRACKET = 49,           /* R_CURLY_BRACKET  */
+  YYSYMBOL_L_SQUARE_BRACKET = 50,          /* L_SQUARE_BRACKET  */
+  YYSYMBOL_R_SQUARE_BRACKET = 51,          /* R_SQUARE_BRACKET  */
+  YYSYMBOL_TERNARY_CONDITIONAL = 52,       /* TERNARY_CONDITIONAL  */
+  YYSYMBOL_NUMBER_SIGN = 53,               /* NUMBER_SIGN  */
+  YYSYMBOL_POINTER = 54,                   /* POINTER  */
+  YYSYMBOL_PRINTF = 55,                    /* PRINTF  */
+  YYSYMBOL_SCANF = 56,                     /* SCANF  */
+  YYSYMBOL_DEFINE = 57,                    /* DEFINE  */
+  YYSYMBOL_EXIT = 58,                      /* EXIT  */
+  YYSYMBOL_NUM_OCTAL = 59,                 /* NUM_OCTAL  */
+  YYSYMBOL_NUM_HEXA = 60,                  /* NUM_HEXA  */
+  YYSYMBOL_NUM_INTEGER = 61,               /* NUM_INTEGER  */
+  YYSYMBOL_CHARACTER = 62,                 /* CHARACTER  */
+  YYSYMBOL_STRING = 63,                    /* STRING  */
+  YYSYMBOL_IDENTIFIER = 64,                /* IDENTIFIER  */
+  YYSYMBOL_OTHER = 65,                     /* OTHER  */
+  YYSYMBOL_YYACCEPT = 66,                  /* $accept  */
+  YYSYMBOL_Programa = 67,                  /* Programa  */
+  YYSYMBOL_DeclaracoesFuncao = 68,         /* DeclaracoesFuncao  */
+  YYSYMBOL_DeclaracoesFuncaoPrime = 69,    /* DeclaracoesFuncaoPrime  */
+  YYSYMBOL_Declaracoes = 70,               /* Declaracoes  */
+  YYSYMBOL_Funcao = 71,                    /* Funcao  */
+  YYSYMBOL_PointerIter = 72,               /* PointerIter  */
+  YYSYMBOL_FuncaoIter = 73,                /* FuncaoIter  */
+  YYSYMBOL_DeclaracaoVariaveis = 74,       /* DeclaracaoVariaveis  */
+  YYSYMBOL_DeclaracaoVariaveisIter = 75,   /* DeclaracaoVariaveisIter  */
+  YYSYMBOL_ExpressaoIter = 76,             /* ExpressaoIter  */
+  YYSYMBOL_DeclaracaoVariaveisAtribuicao = 77, /* DeclaracaoVariaveisAtribuicao  */
+  YYSYMBOL_DeclaracaoVariaveisIterPrime = 78, /* DeclaracaoVariaveisIterPrime  */
+  YYSYMBOL_DeclaracaoPrototipo = 79,       /* DeclaracaoPrototipo  */
+  YYSYMBOL_Parametros = 80,                /* Parametros  */
+  YYSYMBOL_ParametrosOpIter = 81,          /* ParametrosOpIter  */
+  YYSYMBOL_ParametrosIter = 82,            /* ParametrosIter  */
+  YYSYMBOL_ParametrosIterPrime = 83,       /* ParametrosIterPrime  */
+  YYSYMBOL_Tipo = 84,                      /* Tipo  */
+  YYSYMBOL_Bloco = 85,                     /* Bloco  */
+  YYSYMBOL_Comandos = 86,                  /* Comandos  */
+  YYSYMBOL_ComandosPrime = 87,             /* ComandosPrime  */
+  YYSYMBOL_ListaComandos = 88,             /* ListaComandos  */
+  YYSYMBOL_OpElse = 89,                    /* OpElse  */
+  YYSYMBOL_OpExpressao = 90,               /* OpExpressao  */
+  YYSYMBOL_OpVirgulaExpressao = 91,        /* OpVirgulaExpressao  */
+  YYSYMBOL_Expressao = 92,                 /* Expressao  */
+  YYSYMBOL_ExpressaoPrime = 93,            /* ExpressaoPrime  */
+  YYSYMBOL_ExpressaoAtribuicao = 94,       /* ExpressaoAtribuicao  */
+  YYSYMBOL_AtribuicaoOperador = 95,        /* AtribuicaoOperador  */
+  YYSYMBOL_ExpressaoCondicional = 96,      /* ExpressaoCondicional  */
+  YYSYMBOL_ExpressaoCondicionalPrime = 97, /* ExpressaoCondicionalPrime  */
+  YYSYMBOL_ExpressaoOrLogico = 98,         /* ExpressaoOrLogico  */
+  YYSYMBOL_ExpressaoOrLogicoPrime = 99,    /* ExpressaoOrLogicoPrime  */
+  YYSYMBOL_ExpressaoAndLogico = 100,       /* ExpressaoAndLogico  */
+  YYSYMBOL_ExpressaoAndLogicoPrime = 101,  /* ExpressaoAndLogicoPrime  */
+  YYSYMBOL_ExpressaoOr = 102,              /* ExpressaoOr  */
+  YYSYMBOL_ExpressaoOrPrime = 103,         /* ExpressaoOrPrime  */
+  YYSYMBOL_ExpressaoXor = 104,             /* ExpressaoXor  */
+  YYSYMBOL_ExpressaoXorPrime = 105,        /* ExpressaoXorPrime  */
+  YYSYMBOL_ExpressaoAnd = 106,             /* ExpressaoAnd  */
+  YYSYMBOL_ExpressaoAndPrime = 107,        /* ExpressaoAndPrime  */
+  YYSYMBOL_ExpressaoIgualdade = 108,       /* ExpressaoIgualdade  */
+  YYSYMBOL_ExpressaoIgualdadePrime = 109,  /* ExpressaoIgualdadePrime  */
+  YYSYMBOL_IgualdadeOperador = 110,        /* IgualdadeOperador  */
+  YYSYMBOL_ExpressaoRelacional = 111,      /* ExpressaoRelacional  */
+  YYSYMBOL_ExpressaoRelacionalPrime = 112, /* ExpressaoRelacionalPrime  */
+  YYSYMBOL_OperadorRelacional = 113,       /* OperadorRelacional  */
+  YYSYMBOL_ExpressaoShift = 114,           /* ExpressaoShift  */
+  YYSYMBOL_ExpressaoShiftPrime = 115,      /* ExpressaoShiftPrime  */
+  YYSYMBOL_Shift = 116,                    /* Shift  */
+  YYSYMBOL_ExpressaoAditiva = 117,         /* ExpressaoAditiva  */
+  YYSYMBOL_ExpressaoAditivaPrime = 118,    /* ExpressaoAditivaPrime  */
+  YYSYMBOL_MaisMenos = 119,                /* MaisMenos  */
+  YYSYMBOL_ExpressaoMultiplicativa = 120,  /* ExpressaoMultiplicativa  */
+  YYSYMBOL_ExpressaoMultiplicativaPrime = 121, /* ExpressaoMultiplicativaPrime  */
+  YYSYMBOL_Multiplicadores = 122,          /* Multiplicadores  */
+  YYSYMBOL_ExpressaoCast = 123,            /* ExpressaoCast  */
+  YYSYMBOL_ExpressaoUnaria = 124,          /* ExpressaoUnaria  */
+  YYSYMBOL_OperadorUnario = 125,           /* OperadorUnario  */
+  YYSYMBOL_ExpressaoPosFixa = 126,         /* ExpressaoPosFixa  */
+  YYSYMBOL_ExpressaoPosFixaPrime = 127,    /* ExpressaoPosFixaPrime  */
+  YYSYMBOL_OpExpressaoAtribuicaoIter = 128, /* OpExpressaoAtribuicaoIter  */
+  YYSYMBOL_ExpressaoAtribuicaoIter = 129,  /* ExpressaoAtribuicaoIter  */
+  YYSYMBOL_ExpressaoAtribuicaoIterPrime = 130, /* ExpressaoAtribuicaoIterPrime  */
+  YYSYMBOL_ExpressaoPrimaria = 131,        /* ExpressaoPrimaria  */
+  YYSYMBOL_Numero = 132                    /* Numero  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -564,7 +571,7 @@ union yyalloc
 #define YYLAST   295
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  59
+#define YYNTOKENS  66
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  67
 /* YYNRULES -- Number of rules.  */
@@ -573,7 +580,7 @@ union yyalloc
 #define YYNSTATES  237
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   313
+#define YYMAXUTOK   320
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -618,27 +625,28 @@ static const yytype_int8 yytranslate[] =
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,    57,    58
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    76,    76,    79,    80,    83,    84,    88,    89,    90,
-      93,    96,    97,   100,   101,   104,   107,   110,   111,   114,
-     115,   118,   119,   122,   125,   128,   129,   132,   135,   136,
-     139,   140,   141,   144,   147,   150,   151,   154,   155,   156,
-     157,   158,   159,   160,   161,   162,   163,   164,   167,   168,
-     171,   172,   175,   176,   179,   182,   183,   186,   187,   190,
-     191,   192,   195,   198,   199,   202,   204,   205,   208,   211,
-     212,   215,   218,   219,   222,   225,   226,   229,   232,   233,
-     238,   240,   241,   243,   244,   248,   250,   251,   253,   254,
-     255,   256,   260,   262,   263,   265,   266,   270,   272,   273,
-     275,   276,   280,   282,   283,   285,   286,   287,   291,   292,
-     295,   296,   297,   298,   301,   302,   303,   304,   305,   306,
-     309,   310,   313,   314,   315,   316,   319,   320,   323,   326,
-     327,   330,   331,   332,   333,   334,   337,   338,   339
+       0,    83,    83,    86,    87,    90,    91,    94,    95,    96,
+      99,   102,   103,   106,   107,   110,   113,   116,   117,   120,
+     121,   124,   125,   128,   131,   134,   135,   138,   141,   142,
+     145,   146,   147,   150,   153,   156,   157,   160,   161,   162,
+     163,   164,   165,   166,   167,   168,   169,   170,   173,   174,
+     177,   178,   181,   182,   185,   188,   189,   192,   193,   196,
+     197,   198,   201,   204,   205,   208,   211,   212,   215,   218,
+     219,   222,   225,   226,   229,   232,   233,   236,   239,   240,
+     243,   246,   247,   250,   251,   254,   257,   258,   261,   262,
+     263,   264,   267,   270,   271,   274,   275,   278,   281,   282,
+     285,   286,   289,   292,   293,   296,   297,   298,   301,   302,
+     305,   306,   307,   308,   311,   312,   313,   314,   315,   316,
+     319,   320,   323,   324,   325,   326,   329,   330,   333,   336,
+     337,   340,   341,   342,   343,   344,   347,   348,   349
 };
 #endif
 
@@ -654,21 +662,23 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "\"end of file\"", "error", "\"invalid token\"", "HASHTAG", "DEFINE",
-  "IDENTIFIER", "TIMES", "L_CURLY_BRACKET", "R_CURLY_BRACKET",
-  "L_SQUARE_BRACKET", "R_SQUARE_BRACKET", "ASSIGN", "SEMICOLON", "COMMA",
-  "L_PAREN", "R_PAREN", "INT", "CHAR", "VOID", "DO", "WHILE", "IF", "ELSE",
-  "FOR", "PRINTF", "STRING", "SCANF", "AMPERSAND", "EXIT", "RETURN",
-  "PLUS_ASSIGN", "MINUS_ASSIGN", "QUESTION", "COLON", "OR", "AND",
-  "BITWISE_OR", "BITWISE_XOR", "EQUAL", "NOT_EQUAL", "LESS_THAN",
-  "LESS_EQUAL", "GREATER_THAN", "GREATER_EQUAL", "L_SHIFT", "R_SHIFT",
-  "MINUS", "PLUS", "DIV", "MOD", "INC", "DEC", "BITWISE_COMP", "NOT",
-  "CHARACTER", "NUM_INTEGER", "NUM_HEXA", "NUM_OCTAL", "OTHER", "$accept",
-  "Programa", "DecOuFunc", "DecOuFuncPrime", "Declaracoes", "Funcao",
-  "VezesLoop", "FuncaoLoop", "DeclaracaoVars", "DeclaracaoVarsLoop",
-  "ColcheteExpressaoLoop", "DeclaracaoVarsAtribuicao",
-  "DeclaracaoVarsLoopPrime", "DeclaracaoProt", "Parametros",
-  "ParametrosOpLoop", "ParametrosLoop", "ParametrosLoopPrime", "Tipo",
+  "\"end of file\"", "error", "\"invalid token\"", "VOID", "INT", "CHAR",
+  "RETURN", "BREAK", "SWITCH", "CASE", "DEFAULT", "DO", "WHILE", "FOR",
+  "IF", "ELSE", "TYPEDEF", "STRUCT", "PLUS", "MINUS", "MULTIPLY", "DIV",
+  "REMAINDER", "INC", "DEC", "BITWISE_AND", "BITWISE_OR", "BITWISE_NOT",
+  "BITWISE_XOR", "NOT", "LOGICAL_AND", "LOGICAL_OR", "EQUAL", "NOT_EQUAL",
+  "LESS_THAN", "GREATER_THAN", "LESS_EQUAL", "GREATER_EQUAL", "R_SHIFT",
+  "L_SHIFT", "ASSIGN", "ADD_ASSIGN", "MINUS_ASSIGN", "SEMICOLON", "COMMA",
+  "COLON", "L_PAREN", "R_PAREN", "L_CURLY_BRACKET", "R_CURLY_BRACKET",
+  "L_SQUARE_BRACKET", "R_SQUARE_BRACKET", "TERNARY_CONDITIONAL",
+  "NUMBER_SIGN", "POINTER", "PRINTF", "SCANF", "DEFINE", "EXIT",
+  "NUM_OCTAL", "NUM_HEXA", "NUM_INTEGER", "CHARACTER", "STRING",
+  "IDENTIFIER", "OTHER", "$accept", "Programa", "DeclaracoesFuncao",
+  "DeclaracoesFuncaoPrime", "Declaracoes", "Funcao", "PointerIter",
+  "FuncaoIter", "DeclaracaoVariaveis", "DeclaracaoVariaveisIter",
+  "ExpressaoIter", "DeclaracaoVariaveisAtribuicao",
+  "DeclaracaoVariaveisIterPrime", "DeclaracaoPrototipo", "Parametros",
+  "ParametrosOpIter", "ParametrosIter", "ParametrosIterPrime", "Tipo",
   "Bloco", "Comandos", "ComandosPrime", "ListaComandos", "OpElse",
   "OpExpressao", "OpVirgulaExpressao", "Expressao", "ExpressaoPrime",
   "ExpressaoAtribuicao", "AtribuicaoOperador", "ExpressaoCondicional",
@@ -677,13 +687,13 @@ static const char *const yytname[] =
   "ExpressaoAndLogicoPrime", "ExpressaoOr", "ExpressaoOrPrime",
   "ExpressaoXor", "ExpressaoXorPrime", "ExpressaoAnd", "ExpressaoAndPrime",
   "ExpressaoIgualdade", "ExpressaoIgualdadePrime", "IgualdadeOperador",
-  "ExpressaoRelacional", "ExpressaoRelacionalPrime", "RelacionalOperador",
-  "ExpressaoShift", "ExpressaoShiftPrime", "ShiftOperador",
-  "ExpressaoAditiva", "ExpressaoAditivaPrime", "AdicaoOperador",
-  "ExpressaoMultiplicativa", "ExpressaoMultiplicativaPrime",
-  "MultOperador", "ExpressaoCast", "ExpressaoUnaria", "UnarioOperador",
-  "ExpressaoPosFixa", "ExpressaoPosFixaPrime", "OpExpressaoAtribuicaoLoop",
-  "ExpressaoAtribuicaoLoop", "ExpressaoAtribuicaoLoopPrime",
+  "ExpressaoRelacional", "ExpressaoRelacionalPrime", "OperadorRelacional",
+  "ExpressaoShift", "ExpressaoShiftPrime", "Shift", "ExpressaoAditiva",
+  "ExpressaoAditivaPrime", "MaisMenos", "ExpressaoMultiplicativa",
+  "ExpressaoMultiplicativaPrime", "Multiplicadores", "ExpressaoCast",
+  "ExpressaoUnaria", "OperadorUnario", "ExpressaoPosFixa",
+  "ExpressaoPosFixaPrime", "OpExpressaoAtribuicaoIter",
+  "ExpressaoAtribuicaoIter", "ExpressaoAtribuicaoIterPrime",
   "ExpressaoPrimaria", "Numero", YY_NULLPTR
 };
 
@@ -708,30 +718,30 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-      20,    14,  -172,  -172,  -172,    24,    20,  -172,  -172,  -172,
-    -172,    46,    56,  -172,    20,  -172,    46,    66,    61,   185,
-    -172,  -172,     6,  -172,  -172,  -172,   169,  -172,  -172,  -172,
-    -172,   238,   238,  -172,  -172,  -172,  -172,  -172,  -172,  -172,
-      62,  -172,    47,    48,    45,    50,    51,    57,   -10,     1,
-      25,    31,    -2,     0,   185,    13,  -172,  -172,   185,    49,
-      74,     9,    46,    72,   185,  -172,  -172,   185,  -172,   185,
-    -172,   185,  -172,   185,  -172,   185,  -172,   185,  -172,   185,
-    -172,  -172,  -172,  -172,   185,  -172,  -172,  -172,  -172,  -172,
-     185,  -172,  -172,  -172,   185,  -172,  -172,  -172,   185,  -172,
-    -172,  -172,  -172,   185,  -172,  -172,  -172,   185,  -172,  -172,
-     185,   185,  -172,  -172,  -172,    79,    75,  -172,    46,   185,
-      84,    49,  -172,    77,  -172,  -172,    65,  -172,  -172,  -172,
-    -172,  -172,  -172,  -172,  -172,  -172,  -172,  -172,    91,    90,
-      89,  -172,    96,  -172,   101,  -172,    46,  -172,    88,    49,
-      46,   185,   185,  -172,   185,  -172,  -172,  -172,    96,   113,
-    -172,    88,  -172,   112,   106,   107,   108,   109,   111,   114,
-     185,  -172,   118,    88,   115,  -172,  -172,  -172,  -172,   119,
-      96,   123,   116,   185,   185,   185,   121,   122,   185,   125,
-    -172,  -172,  -172,    88,  -172,    49,  -172,  -172,   134,   135,
-     137,   141,   120,   136,   139,  -172,  -172,  -172,   185,   112,
-     112,   185,   185,   140,   129,   145,   143,  -172,   138,   147,
-    -172,   149,   157,  -172,   151,   112,  -172,   185,  -172,   152,
-    -172,  -172,   153,   159,   112,  -172,  -172
+       5,  -172,  -172,  -172,   -28,    26,     5,  -172,  -172,  -172,
+    -172,    11,   -27,  -172,     5,  -172,    11,    -7,    22,   116,
+    -172,  -172,   -22,  -172,  -172,  -172,  -172,   231,   231,  -172,
+    -172,  -172,    92,  -172,  -172,  -172,  -172,  -172,  -172,  -172,
+      31,  -172,    28,    50,    52,    57,    58,    60,   -10,    -1,
+       7,    59,    42,    27,   116,    -8,  -172,  -172,    68,   116,
+      47,   -23,   116,  -172,  -172,    11,    41,   116,  -172,   116,
+    -172,   116,  -172,   116,  -172,   116,  -172,   116,  -172,   116,
+    -172,  -172,  -172,  -172,   116,  -172,  -172,  -172,  -172,  -172,
+     116,  -172,  -172,  -172,   116,  -172,  -172,  -172,   116,  -172,
+    -172,  -172,  -172,   116,  -172,  -172,  -172,   116,  -172,  -172,
+    -172,  -172,   116,   116,  -172,    43,  -172,    11,    38,   116,
+      48,  -172,    68,    46,  -172,  -172,    53,  -172,  -172,  -172,
+    -172,  -172,  -172,  -172,  -172,  -172,  -172,  -172,    55,    54,
+    -172,    49,  -172,    39,    56,  -172,    11,  -172,   184,    68,
+      11,   116,   116,   116,  -172,  -172,  -172,    56,  -172,    40,
+    -172,   116,    61,    67,    74,    76,  -172,   184,    77,    78,
+      79,  -172,    65,   184,    62,  -172,  -172,  -172,  -172,    63,
+      56,    83,  -172,   117,   116,   116,   116,    81,    69,    70,
+     116,  -172,  -172,   184,  -172,    68,  -172,  -172,    85,    90,
+     101,    99,  -172,   103,   104,   102,  -172,  -172,   116,    61,
+     116,    61,   116,   110,   125,   115,   112,  -172,   118,   145,
+    -172,   120,   105,  -172,   127,   116,    61,  -172,  -172,   121,
+    -172,   126,  -172,   129,    61,  -172,  -172
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -739,54 +749,54 @@ static const yytype_int16 yypact[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,    30,    31,    32,     0,     6,     3,     4,     8,
+       0,    32,    30,    31,     0,     0,     6,     3,     4,     8,
        9,    12,     0,     1,     6,     2,    12,     0,     0,     0,
-       5,    11,    18,    15,   131,   115,     0,   134,   114,   117,
-     116,     0,     0,   118,   119,   133,   136,   137,   138,     7,
+       5,    11,    18,    15,   116,   117,   115,     0,     0,   114,
+     118,   119,     0,   138,   137,   136,   133,   134,   131,     7,
       56,    57,    64,    67,    70,    73,    76,    79,    82,    87,
-      94,    99,   104,   108,     0,   110,   120,   132,     0,    26,
-      20,     0,    12,     0,     0,   111,   112,     0,    54,     0,
+      94,    99,   104,   108,     0,   110,   120,   132,    26,     0,
+      20,     0,     0,   111,   112,    12,     0,     0,    54,     0,
       62,     0,    65,     0,    68,     0,    71,     0,    74,     0,
-      77,    83,    84,    80,     0,    88,    89,    90,    91,    85,
-       0,    95,    96,    92,     0,   100,   101,    97,     0,   105,
+      77,    83,    84,    80,     0,    88,    90,    89,    91,    85,
+       0,    96,    95,    92,     0,   100,   101,    97,     0,   105,
      106,   107,   102,     0,    59,    60,    61,     0,   113,   108,
-       0,   127,   123,   124,   121,     0,     0,    25,    12,     0,
-      22,    14,    23,     0,   135,    55,     0,    66,    69,    72,
-      75,    78,    81,    86,    93,    98,   103,    58,     0,   130,
-       0,   126,    18,    24,     0,    19,    12,    16,     0,    14,
-      12,     0,     0,   122,     0,   128,   125,    17,    18,     0,
-      21,     0,    46,     0,     0,     0,     0,     0,     0,     0,
-      51,    47,     0,    36,     0,    13,   109,    63,   129,    29,
-      18,     0,     0,     0,     0,    51,     0,     0,     0,     0,
-      50,    10,    34,    36,    45,     0,    27,    33,     0,     0,
-       0,     0,    53,     0,     0,    44,    35,    28,     0,     0,
-       0,    51,     0,     0,     0,     0,     0,    39,    49,     0,
-      52,     0,     0,    43,     0,     0,    38,    51,    41,     0,
-      37,    48,     0,     0,     0,    42,    40
+     123,   124,   127,     0,   121,     0,    25,    12,     0,     0,
+      22,    23,    14,     0,   135,    55,     0,    66,    69,    72,
+      75,    78,    81,    86,    93,    98,   103,    58,   130,     0,
+     126,     0,    24,     0,    18,    19,    12,    16,     0,    14,
+      12,     0,     0,     0,   128,   125,   122,    18,    17,     0,
+      21,    51,     0,     0,     0,     0,    46,     0,     0,     0,
+       0,    47,     0,    36,     0,    13,   109,    63,   129,    29,
+      18,     0,    50,     0,     0,    51,     0,     0,     0,     0,
+       0,    10,    34,    36,    45,     0,    27,    44,     0,     0,
+       0,     0,    33,    53,     0,     0,    35,    28,     0,     0,
+      51,     0,     0,     0,     0,     0,     0,    39,     0,    49,
+      52,     0,     0,    43,     0,    51,     0,    38,    41,     0,
+      37,     0,    48,     0,     0,    42,    40
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -172,  -172,   172,   162,  -172,  -172,    -8,    28,  -116,    27,
-    -123,  -172,  -172,  -172,  -172,  -172,   -17,  -172,   -25,  -151,
-      18,   -13,  -167,  -172,  -171,  -172,   -19,  -172,   -94,  -172,
-      29,  -172,   117,  -172,   124,  -172,   126,  -172,   105,  -172,
-     127,  -172,   100,  -172,  -172,   110,  -172,  -172,   104,  -172,
-    -172,    97,  -172,  -172,    99,  -172,  -172,   -52,   -22,  -172,
-    -172,  -172,  -172,    53,  -172,  -172,  -172
+    -172,  -172,   174,   167,  -172,  -172,    -9,    33,  -105,    37,
+    -125,  -172,  -172,  -172,  -172,  -172,   -11,  -172,   -31,  -150,
+      18,    -6,  -152,  -172,  -171,  -172,   -19,  -172,  -101,  -172,
+      34,  -172,   123,  -172,   119,  -172,   113,  -172,   122,  -172,
+     131,  -172,   128,  -172,  -172,   111,  -172,  -172,   106,  -172,
+    -172,   107,  -172,  -172,   114,  -172,  -172,   -49,   -24,  -172,
+    -172,  -172,  -172,    66,  -172,  -172,  -172
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_uint8 yydefgoto[] =
 {
        0,     5,    14,    15,     7,     8,   159,   148,     9,    18,
-      60,   120,   147,    10,    61,   116,   117,   196,    11,   171,
-     172,   192,   173,   226,   189,   213,   174,    68,    40,   107,
+      60,   120,   147,    10,    61,   115,   116,   196,    11,   171,
+     172,   192,   173,   227,   181,   213,   174,    68,    40,   107,
       41,    70,    42,    72,    43,    74,    44,    76,    45,    78,
       46,    80,    47,    83,    84,    48,    89,    90,    49,    93,
       94,    50,    97,    98,    51,   102,   103,    52,    53,    54,
-      55,   114,   140,   141,   155,    56,    57
+      55,   114,   139,   140,   154,    56,    57
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -794,119 +804,119 @@ static const yytype_uint8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      39,    62,   108,    17,    99,   149,   193,    63,    21,    65,
-      66,   104,   182,   137,   201,    58,   121,   139,    12,   157,
-      59,   122,   110,     1,    13,   145,   193,   111,    81,    82,
-     105,   106,   109,   149,   118,   179,     2,     3,     4,   115,
-     219,    85,    86,    87,    88,    63,   100,   101,   125,   109,
-     126,   109,    16,   109,   123,   109,   232,   109,   217,   218,
-     139,    19,   109,   112,   113,     2,     3,     4,   109,    91,
-      92,    22,   109,    23,   231,    67,   109,    95,    96,    69,
-      73,   109,    71,   236,    79,   119,    75,   124,    77,   142,
-     143,   138,   151,    24,    25,   161,   150,   146,   152,   176,
-     162,   153,    26,   154,   156,    58,   158,   163,   164,   165,
-     144,   166,   167,    27,   168,    28,   169,   170,   180,   161,
-     183,   184,   185,   186,   150,   187,   191,   194,   188,   109,
-     109,   197,   195,   212,    29,    30,   198,   205,    31,    32,
-      33,    34,    35,    36,    37,    38,   202,   203,   208,   214,
-     209,   190,   210,   211,   215,   221,   222,   223,   224,   227,
-     225,   228,   229,   230,   199,   200,   190,   233,   234,   204,
-     118,   235,     6,   160,    24,    25,    20,   175,   207,   181,
-     206,   177,   130,    26,   132,     2,     3,     4,   127,   216,
-      24,    25,   190,   220,    27,   135,    28,   128,   134,    26,
-     133,   129,   136,     0,     0,     0,   131,   178,   190,     0,
-      27,     0,    28,     0,     0,    29,    30,     0,     0,    31,
-      32,    33,    34,    35,    36,    37,    38,     0,     0,     0,
-       0,    29,    30,     0,     0,    31,    32,    33,    34,    35,
-      36,    37,    38,    24,    25,     0,     0,     0,     0,     0,
-       0,     0,    64,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    27,     0,    28,     0,     0,     0,     0,
+      39,    65,    17,    63,    64,   108,   137,    21,     1,     2,
+       3,   138,   183,    66,   200,   110,   111,   149,   145,   158,
+     121,   193,    81,    82,    58,   122,    13,   117,    59,    12,
+     109,    16,   179,    85,    86,    87,    88,    19,   112,   218,
+     118,   193,   113,    66,   149,    91,    92,   109,   125,   109,
+     126,   109,   138,   109,   231,   109,   123,    22,     4,   217,
+     109,   219,    99,   100,   101,    23,   109,   104,   105,   106,
+     109,     1,     2,     3,   109,    67,   232,    95,    96,   109,
+      69,    71,    73,    75,   236,    79,    77,   119,   124,   144,
+     142,   150,   146,   151,   141,     1,     2,     3,   152,   153,
+     156,   155,   176,   157,   180,   194,    59,   195,   143,   167,
+      24,    25,    26,   184,   191,    27,    28,    29,   150,    30,
+     185,    31,   186,   188,   189,   190,   197,   109,   109,   198,
+     202,   208,   203,   204,    24,    25,    26,   209,    32,    27,
+      28,    29,   182,    30,   210,    31,   211,   212,   214,   215,
+     222,    33,    34,    35,    36,    37,    38,   221,   223,   224,
+     226,   225,    32,   228,   117,   199,   182,   201,   233,   229,
+     230,   205,   235,   234,     6,    33,    34,    35,    36,    37,
+      38,    20,   175,   160,   207,   187,   177,   206,   129,   216,
+     161,   182,   128,   220,   127,   162,   163,   164,   165,   130,
+     134,   133,    24,    25,    26,   135,   182,    27,    28,    29,
+     131,    30,   132,    31,     0,     0,     0,   136,     0,   178,
+       0,     0,     0,     0,     0,     0,     0,   166,     0,     0,
+      32,     0,   167,     0,     0,     0,     0,     0,     0,   168,
+     169,     0,   170,    33,    34,    35,    36,    37,    38,    24,
+      25,    26,     0,     0,    27,    28,    29,     0,    30,     0,
+      31,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,    62,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    29,    30,     0,     0,    31,    32,
       33,    34,    35,    36,    37,    38
 };
 
 static const yytype_int16 yycheck[] =
 {
-      19,    26,    54,    11,     6,   121,   173,    26,    16,    31,
-      32,    11,   163,   107,   185,     9,     7,   111,     4,   142,
-      14,    12,     9,     3,     0,   119,   193,    14,    38,    39,
-      30,    31,    54,   149,    59,   158,    16,    17,    18,    58,
-     211,    40,    41,    42,    43,    64,    48,    49,    67,    71,
-      69,    73,     6,    75,    62,    77,   227,    79,   209,   210,
-     154,     5,    84,    50,    51,    16,    17,    18,    90,    44,
-      45,     5,    94,    12,   225,    13,    98,    46,    47,    32,
-      35,   103,    34,   234,    27,    11,    36,    15,    37,    10,
-      15,   110,    15,     5,     6,     7,   121,    13,    33,   151,
-      12,    10,    14,    13,    15,     9,     5,    19,    20,    21,
-     118,    23,    24,    25,    26,    27,    28,    29,     5,     7,
-      14,    14,    14,    14,   149,    14,     8,    12,    14,   151,
-     152,     8,    13,    13,    46,    47,    20,    12,    50,    51,
-      52,    53,    54,    55,    56,    57,    25,    25,    14,    13,
-      15,   170,    15,    12,    15,    15,    27,    12,    15,    12,
-      22,    12,     5,    12,   183,   184,   185,    15,    15,   188,
-     195,    12,     0,   146,     5,     6,    14,   149,   195,   161,
-     193,   152,    77,    14,    84,    16,    17,    18,    71,   208,
-       5,     6,   211,   212,    25,    98,    27,    73,    94,    14,
-      90,    75,   103,    -1,    -1,    -1,    79,   154,   227,    -1,
-      25,    -1,    27,    -1,    -1,    46,    47,    -1,    -1,    50,
-      51,    52,    53,    54,    55,    56,    57,    -1,    -1,    -1,
-      -1,    46,    47,    -1,    -1,    50,    51,    52,    53,    54,
-      55,    56,    57,     5,     6,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    14,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    25,    -1,    27,    -1,    -1,    -1,    -1,
+      19,    32,    11,    27,    28,    54,   107,    16,     3,     4,
+       5,   112,   162,    32,   185,    23,    24,   122,   119,   144,
+      43,   173,    32,    33,    46,    48,     0,    58,    50,    57,
+      54,    20,   157,    34,    35,    36,    37,    64,    46,   210,
+      59,   193,    50,    62,   149,    38,    39,    71,    67,    73,
+      69,    75,   153,    77,   225,    79,    65,    64,    53,   209,
+      84,   211,    20,    21,    22,    43,    90,    40,    41,    42,
+      94,     3,     4,     5,    98,    44,   226,    18,    19,   103,
+      52,    31,    30,    26,   234,    25,    28,    40,    47,    51,
+      47,   122,    44,    47,   113,     3,     4,     5,    45,    44,
+      51,    47,   151,    64,    64,    43,    50,    44,   117,    48,
+      18,    19,    20,    46,    49,    23,    24,    25,   149,    27,
+      46,    29,    46,    46,    46,    46,    43,   151,   152,    12,
+      49,    46,    63,    63,    18,    19,    20,    47,    46,    23,
+      24,    25,   161,    27,    43,    29,    47,    44,    44,    47,
+      25,    59,    60,    61,    62,    63,    64,    47,    43,    47,
+      15,    43,    46,    43,   195,   184,   185,   186,    47,    64,
+      43,   190,    43,    47,     0,    59,    60,    61,    62,    63,
+      64,    14,   149,   146,   195,   167,   152,   193,    75,   208,
+       6,   210,    73,   212,    71,    11,    12,    13,    14,    77,
+      94,    90,    18,    19,    20,    98,   225,    23,    24,    25,
+      79,    27,    84,    29,    -1,    -1,    -1,   103,    -1,   153,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    43,    -1,    -1,
+      46,    -1,    48,    -1,    -1,    -1,    -1,    -1,    -1,    55,
+      56,    -1,    58,    59,    60,    61,    62,    63,    64,    18,
+      19,    20,    -1,    -1,    23,    24,    25,    -1,    27,    -1,
+      29,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    46,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    46,    47,    -1,    -1,    50,    51,
-      52,    53,    54,    55,    56,    57
+      59,    60,    61,    62,    63,    64
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
-static const yytype_int8 yystos[] =
+static const yytype_uint8 yystos[] =
 {
-       0,     3,    16,    17,    18,    60,    61,    63,    64,    67,
-      72,    77,     4,     0,    61,    62,     6,    65,    68,     5,
-      62,    65,     5,    12,     5,     6,    14,    25,    27,    46,
-      47,    50,    51,    52,    53,    54,    55,    56,    57,    85,
-      87,    89,    91,    93,    95,    97,    99,   101,   104,   107,
-     110,   113,   116,   117,   118,   119,   124,   125,     9,    14,
-      69,    73,    77,    85,    14,   117,   117,    13,    86,    32,
-      90,    34,    92,    35,    94,    36,    96,    37,    98,    27,
-     100,    38,    39,   102,   103,    40,    41,    42,    43,   105,
-     106,    44,    45,   108,   109,    46,    47,   111,   112,     6,
-      48,    49,   114,   115,    11,    30,    31,    88,   116,   117,
-       9,    14,    50,    51,   120,    85,    74,    75,    77,    11,
-      70,     7,    12,    65,    15,    85,    85,    91,    93,    95,
-      97,    99,   101,   104,   107,   110,   113,    87,    85,    87,
-     121,   122,    10,    15,    65,    87,    13,    71,    66,    67,
-      77,    15,    33,    10,    13,   123,    15,    69,     5,    65,
-      68,     7,    12,    19,    20,    21,    23,    24,    26,    28,
-      29,    78,    79,    81,    85,    66,   116,    89,   122,    69,
-       5,    79,    78,    14,    14,    14,    14,    14,    14,    83,
-      85,     8,    80,    81,    12,    13,    76,     8,    20,    85,
-      85,    83,    25,    25,    85,    12,    80,    75,    14,    15,
-      15,    12,    13,    84,    13,    15,    85,    78,    78,    83,
-      85,    15,    27,    12,    15,    22,    82,    12,    12,     5,
-      12,    78,    83,    15,    15,    12,    78
+       0,     3,     4,     5,    53,    67,    68,    70,    71,    74,
+      79,    84,    57,     0,    68,    69,    20,    72,    75,    64,
+      69,    72,    64,    43,    18,    19,    20,    23,    24,    25,
+      27,    29,    46,    59,    60,    61,    62,    63,    64,    92,
+      94,    96,    98,   100,   102,   104,   106,   108,   111,   114,
+     117,   120,   123,   124,   125,   126,   131,   132,    46,    50,
+      76,    80,    46,   124,   124,    84,    92,    44,    93,    52,
+      97,    31,    99,    30,   101,    26,   103,    28,   105,    25,
+     107,    32,    33,   109,   110,    34,    35,    36,    37,   112,
+     113,    38,    39,   115,   116,    18,    19,   118,   119,    20,
+      21,    22,   121,   122,    40,    41,    42,    95,   123,   124,
+      23,    24,    46,    50,   127,    81,    82,    84,    92,    40,
+      77,    43,    48,    72,    47,    92,    92,    98,   100,   102,
+     104,   106,   108,   111,   114,   117,   120,    94,    94,   128,
+     129,    92,    47,    72,    51,    94,    44,    78,    73,    74,
+      84,    47,    45,    44,   130,    47,    51,    64,    76,    72,
+      75,     6,    11,    12,    13,    14,    43,    48,    55,    56,
+      58,    85,    86,    88,    92,    73,   123,    96,   129,    76,
+      64,    90,    92,    85,    46,    46,    46,    86,    46,    46,
+      46,    49,    87,    88,    43,    44,    83,    43,    12,    92,
+      90,    92,    49,    63,    63,    92,    87,    82,    46,    47,
+      43,    47,    44,    91,    44,    47,    92,    85,    90,    85,
+      92,    47,    25,    43,    47,    43,    15,    89,    43,    64,
+      43,    90,    85,    47,    47,    43,    85
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
-static const yytype_int8 yyr1[] =
+static const yytype_uint8 yyr1[] =
 {
-       0,    59,    60,    61,    61,    62,    62,    63,    63,    63,
-      64,    65,    65,    66,    66,    67,    68,    69,    69,    70,
-      70,    71,    71,    72,    73,    74,    74,    75,    76,    76,
-      77,    77,    77,    78,    79,    80,    80,    81,    81,    81,
-      81,    81,    81,    81,    81,    81,    81,    81,    82,    82,
-      83,    83,    84,    84,    85,    86,    86,    87,    87,    88,
-      88,    88,    89,    90,    90,    91,    92,    92,    93,    94,
-      94,    95,    96,    96,    97,    98,    98,    99,   100,   100,
-     101,   102,   102,   103,   103,   104,   105,   105,   106,   106,
-     106,   106,   107,   108,   108,   109,   109,   110,   111,   111,
-     112,   112,   113,   114,   114,   115,   115,   115,   116,   116,
-     117,   117,   117,   117,   118,   118,   118,   118,   118,   118,
-     119,   119,   120,   120,   120,   120,   121,   121,   122,   123,
-     123,   124,   124,   124,   124,   124,   125,   125,   125
+       0,    66,    67,    68,    68,    69,    69,    70,    70,    70,
+      71,    72,    72,    73,    73,    74,    75,    76,    76,    77,
+      77,    78,    78,    79,    80,    81,    81,    82,    83,    83,
+      84,    84,    84,    85,    86,    87,    87,    88,    88,    88,
+      88,    88,    88,    88,    88,    88,    88,    88,    89,    89,
+      90,    90,    91,    91,    92,    93,    93,    94,    94,    95,
+      95,    95,    96,    97,    97,    98,    99,    99,   100,   101,
+     101,   102,   103,   103,   104,   105,   105,   106,   107,   107,
+     108,   109,   109,   110,   110,   111,   112,   112,   113,   113,
+     113,   113,   114,   115,   115,   116,   116,   117,   118,   118,
+     119,   119,   120,   121,   121,   122,   122,   122,   123,   123,
+     124,   124,   124,   124,   125,   125,   125,   125,   125,   125,
+     126,   126,   127,   127,   127,   127,   128,   128,   129,   130,
+     130,   131,   131,   131,   131,   131,   132,   132,   132
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -1388,824 +1398,830 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2: /* Programa: DecOuFunc DecOuFuncPrime  */
-#line 76 "sintatico.y"
-                                   {}
-#line 1395 "sintatico.tab.c"
-    break;
-
-  case 3: /* DecOuFunc: Declaracoes  */
-#line 79 "sintatico.y"
-                       {}
-#line 1401 "sintatico.tab.c"
-    break;
-
-  case 4: /* DecOuFunc: Funcao  */
-#line 80 "sintatico.y"
-                                   {}
-#line 1407 "sintatico.tab.c"
-    break;
-
-  case 5: /* DecOuFuncPrime: DecOuFunc DecOuFuncPrime  */
+  case 2: /* Programa: DeclaracoesFuncao DeclaracoesFuncaoPrime  */
 #line 83 "sintatico.y"
-                                         {}
-#line 1413 "sintatico.tab.c"
+                                                   {}
+#line 1405 "sintatico.tab.c"
     break;
 
-  case 6: /* DecOuFuncPrime: %empty  */
-#line 84 "sintatico.y"
-                    {}
-#line 1419 "sintatico.tab.c"
+  case 3: /* DeclaracoesFuncao: Declaracoes  */
+#line 86 "sintatico.y"
+                               {}
+#line 1411 "sintatico.tab.c"
     break;
 
-  case 7: /* Declaracoes: HASHTAG DEFINE IDENTIFIER Expressao  */
-#line 88 "sintatico.y"
-                                                 {}
-#line 1425 "sintatico.tab.c"
+  case 4: /* DeclaracoesFuncao: Funcao  */
+#line 87 "sintatico.y"
+                 {}
+#line 1417 "sintatico.tab.c"
     break;
 
-  case 8: /* Declaracoes: DeclaracaoVars  */
-#line 89 "sintatico.y"
-                                    {}
-#line 1431 "sintatico.tab.c"
-    break;
-
-  case 9: /* Declaracoes: DeclaracaoProt  */
+  case 5: /* DeclaracoesFuncaoPrime: DeclaracoesFuncao DeclaracoesFuncaoPrime  */
 #line 90 "sintatico.y"
-                            {}
-#line 1437 "sintatico.tab.c"
+                                                                 {}
+#line 1423 "sintatico.tab.c"
     break;
 
-  case 10: /* Funcao: Tipo VezesLoop IDENTIFIER Parametros L_CURLY_BRACKET FuncaoLoop Comandos R_CURLY_BRACKET  */
-#line 93 "sintatico.y"
-                                                                                                 {}
-#line 1443 "sintatico.tab.c"
+  case 6: /* DeclaracoesFuncaoPrime: %empty  */
+#line 91 "sintatico.y"
+          {}
+#line 1429 "sintatico.tab.c"
     break;
 
-  case 11: /* VezesLoop: TIMES VezesLoop  */
-#line 96 "sintatico.y"
-                           {}
-#line 1449 "sintatico.tab.c"
-    break;
-
-  case 12: /* VezesLoop: %empty  */
-#line 97 "sintatico.y"
-                   {}
-#line 1455 "sintatico.tab.c"
-    break;
-
-  case 13: /* FuncaoLoop: DeclaracaoVars FuncaoLoop  */
-#line 100 "sintatico.y"
-                                      {}
-#line 1461 "sintatico.tab.c"
-    break;
-
-  case 14: /* FuncaoLoop: %empty  */
-#line 101 "sintatico.y"
-                    {}
-#line 1467 "sintatico.tab.c"
-    break;
-
-  case 15: /* DeclaracaoVars: Tipo DeclaracaoVarsLoop SEMICOLON  */
-#line 104 "sintatico.y"
-                                                  {}
-#line 1473 "sintatico.tab.c"
-    break;
-
-  case 16: /* DeclaracaoVarsLoop: VezesLoop IDENTIFIER ColcheteExpressaoLoop DeclaracaoVarsAtribuicao DeclaracaoVarsLoopPrime  */
-#line 107 "sintatico.y"
-                                                                                                                {}
-#line 1479 "sintatico.tab.c"
-    break;
-
-  case 17: /* ColcheteExpressaoLoop: L_SQUARE_BRACKET Expressao R_SQUARE_BRACKET ColcheteExpressaoLoop  */
-#line 110 "sintatico.y"
-                                                                                         {}
-#line 1485 "sintatico.tab.c"
-    break;
-
-  case 18: /* ColcheteExpressaoLoop: %empty  */
-#line 111 "sintatico.y"
-                                           {}
-#line 1491 "sintatico.tab.c"
-    break;
-
-  case 19: /* DeclaracaoVarsAtribuicao: ASSIGN ExpressaoAtribuicao  */
-#line 114 "sintatico.y"
+  case 7: /* Declaracoes: NUMBER_SIGN DEFINE IDENTIFIER Expressao  */
+#line 94 "sintatico.y"
                                                      {}
-#line 1497 "sintatico.tab.c"
+#line 1435 "sintatico.tab.c"
     break;
 
-  case 20: /* DeclaracaoVarsAtribuicao: %empty  */
-#line 115 "sintatico.y"
-                                                  {}
-#line 1503 "sintatico.tab.c"
-    break;
-
-  case 21: /* DeclaracaoVarsLoopPrime: COMMA DeclaracaoVarsLoop  */
-#line 118 "sintatico.y"
-                                                  {}
-#line 1509 "sintatico.tab.c"
-    break;
-
-  case 22: /* DeclaracaoVarsLoopPrime: %empty  */
-#line 119 "sintatico.y"
-                                     {}
-#line 1515 "sintatico.tab.c"
-    break;
-
-  case 23: /* DeclaracaoProt: Tipo VezesLoop IDENTIFIER Parametros SEMICOLON  */
-#line 122 "sintatico.y"
-                                                               {}
-#line 1521 "sintatico.tab.c"
-    break;
-
-  case 24: /* Parametros: L_PAREN ParametrosOpLoop R_PAREN  */
-#line 125 "sintatico.y"
-                                             {}
-#line 1527 "sintatico.tab.c"
-    break;
-
-  case 25: /* ParametrosOpLoop: ParametrosLoop  */
-#line 128 "sintatico.y"
-                                 {}
-#line 1533 "sintatico.tab.c"
-    break;
-
-  case 26: /* ParametrosOpLoop: %empty  */
-#line 129 "sintatico.y"
+  case 8: /* Declaracoes: DeclaracaoVariaveis  */
+#line 95 "sintatico.y"
                               {}
-#line 1539 "sintatico.tab.c"
+#line 1441 "sintatico.tab.c"
     break;
 
-  case 27: /* ParametrosLoop: Tipo VezesLoop IDENTIFIER ColcheteExpressaoLoop ParametrosLoopPrime  */
-#line 132 "sintatico.y"
-                                                                                    {}
-#line 1545 "sintatico.tab.c"
+  case 9: /* Declaracoes: DeclaracaoPrototipo  */
+#line 96 "sintatico.y"
+                              {}
+#line 1447 "sintatico.tab.c"
     break;
 
-  case 28: /* ParametrosLoopPrime: COMMA ParametrosLoop  */
+  case 10: /* Funcao: Tipo PointerIter IDENTIFIER Parametros L_CURLY_BRACKET FuncaoIter Comandos R_CURLY_BRACKET  */
+#line 99 "sintatico.y"
+                                                                                                   {}
+#line 1453 "sintatico.tab.c"
+    break;
+
+  case 11: /* PointerIter: MULTIPLY PointerIter  */
+#line 102 "sintatico.y"
+                                  {}
+#line 1459 "sintatico.tab.c"
+    break;
+
+  case 12: /* PointerIter: %empty  */
+#line 103 "sintatico.y"
+          {}
+#line 1465 "sintatico.tab.c"
+    break;
+
+  case 13: /* FuncaoIter: DeclaracaoVariaveis FuncaoIter  */
+#line 106 "sintatico.y"
+                                           {}
+#line 1471 "sintatico.tab.c"
+    break;
+
+  case 14: /* FuncaoIter: %empty  */
+#line 107 "sintatico.y"
+          {}
+#line 1477 "sintatico.tab.c"
+    break;
+
+  case 15: /* DeclaracaoVariaveis: Tipo DeclaracaoVariaveisIter SEMICOLON  */
+#line 110 "sintatico.y"
+                                                            {}
+#line 1483 "sintatico.tab.c"
+    break;
+
+  case 16: /* DeclaracaoVariaveisIter: PointerIter IDENTIFIER ExpressaoIter DeclaracaoVariaveisAtribuicao DeclaracaoVariaveisIterPrime  */
+#line 113 "sintatico.y"
+                                                                                                                         {}
+#line 1489 "sintatico.tab.c"
+    break;
+
+  case 17: /* ExpressaoIter: L_SQUARE_BRACKET Expressao R_SQUARE_BRACKET ExpressaoIter  */
+#line 116 "sintatico.y"
+                                                                         {}
+#line 1495 "sintatico.tab.c"
+    break;
+
+  case 18: /* ExpressaoIter: %empty  */
+#line 117 "sintatico.y"
+          {}
+#line 1501 "sintatico.tab.c"
+    break;
+
+  case 19: /* DeclaracaoVariaveisAtribuicao: ASSIGN ExpressaoAtribuicao  */
+#line 120 "sintatico.y"
+                                                          {}
+#line 1507 "sintatico.tab.c"
+    break;
+
+  case 20: /* DeclaracaoVariaveisAtribuicao: %empty  */
+#line 121 "sintatico.y"
+          {}
+#line 1513 "sintatico.tab.c"
+    break;
+
+  case 21: /* DeclaracaoVariaveisIterPrime: COMMA DeclaracaoVariaveisIter  */
+#line 124 "sintatico.y"
+                                                            {}
+#line 1519 "sintatico.tab.c"
+    break;
+
+  case 22: /* DeclaracaoVariaveisIterPrime: %empty  */
+#line 125 "sintatico.y"
+          {}
+#line 1525 "sintatico.tab.c"
+    break;
+
+  case 23: /* DeclaracaoPrototipo: Tipo PointerIter IDENTIFIER Parametros SEMICOLON  */
+#line 128 "sintatico.y"
+                                                                      {}
+#line 1531 "sintatico.tab.c"
+    break;
+
+  case 24: /* Parametros: L_PAREN ParametrosOpIter R_PAREN  */
+#line 131 "sintatico.y"
+                                             {}
+#line 1537 "sintatico.tab.c"
+    break;
+
+  case 25: /* ParametrosOpIter: ParametrosIter  */
+#line 134 "sintatico.y"
+                                 {}
+#line 1543 "sintatico.tab.c"
+    break;
+
+  case 26: /* ParametrosOpIter: %empty  */
 #line 135 "sintatico.y"
-                                          {}
-#line 1551 "sintatico.tab.c"
+          {}
+#line 1549 "sintatico.tab.c"
     break;
 
-  case 29: /* ParametrosLoopPrime: %empty  */
-#line 136 "sintatico.y"
-                             {}
-#line 1557 "sintatico.tab.c"
+  case 27: /* ParametrosIter: Tipo PointerIter IDENTIFIER ExpressaoIter ParametrosIterPrime  */
+#line 138 "sintatico.y"
+                                                                              {}
+#line 1555 "sintatico.tab.c"
+    break;
+
+  case 28: /* ParametrosIterPrime: COMMA ParametrosIter  */
+#line 141 "sintatico.y"
+                                          {}
+#line 1561 "sintatico.tab.c"
+    break;
+
+  case 29: /* ParametrosIterPrime: %empty  */
+#line 142 "sintatico.y"
+          {}
+#line 1567 "sintatico.tab.c"
     break;
 
   case 30: /* Tipo: INT  */
-#line 139 "sintatico.y"
+#line 145 "sintatico.y"
           {}
-#line 1563 "sintatico.tab.c"
+#line 1573 "sintatico.tab.c"
     break;
 
   case 31: /* Tipo: CHAR  */
-#line 140 "sintatico.y"
+#line 146 "sintatico.y"
                {}
-#line 1569 "sintatico.tab.c"
+#line 1579 "sintatico.tab.c"
     break;
 
   case 32: /* Tipo: VOID  */
-#line 141 "sintatico.y"
+#line 147 "sintatico.y"
                {}
-#line 1575 "sintatico.tab.c"
+#line 1585 "sintatico.tab.c"
     break;
 
   case 33: /* Bloco: L_CURLY_BRACKET Comandos R_CURLY_BRACKET  */
-#line 144 "sintatico.y"
+#line 150 "sintatico.y"
                                                 {}
-#line 1581 "sintatico.tab.c"
+#line 1591 "sintatico.tab.c"
     break;
 
   case 34: /* Comandos: ListaComandos ComandosPrime  */
-#line 147 "sintatico.y"
+#line 153 "sintatico.y"
                                       {}
-#line 1587 "sintatico.tab.c"
+#line 1597 "sintatico.tab.c"
     break;
 
   case 35: /* ComandosPrime: ListaComandos ComandosPrime  */
-#line 150 "sintatico.y"
+#line 156 "sintatico.y"
                                            {}
-#line 1593 "sintatico.tab.c"
+#line 1603 "sintatico.tab.c"
     break;
 
   case 36: /* ComandosPrime: %empty  */
-#line 151 "sintatico.y"
-                   {}
-#line 1599 "sintatico.tab.c"
+#line 157 "sintatico.y"
+          {}
+#line 1609 "sintatico.tab.c"
     break;
 
   case 37: /* ListaComandos: DO Bloco WHILE L_PAREN Expressao R_PAREN SEMICOLON  */
-#line 154 "sintatico.y"
+#line 160 "sintatico.y"
                                                                   {}
-#line 1605 "sintatico.tab.c"
+#line 1615 "sintatico.tab.c"
     break;
 
   case 38: /* ListaComandos: IF L_PAREN Expressao R_PAREN Bloco OpElse  */
-#line 155 "sintatico.y"
-                                                                     {}
-#line 1611 "sintatico.tab.c"
+#line 161 "sintatico.y"
+                                                    {}
+#line 1621 "sintatico.tab.c"
     break;
 
   case 39: /* ListaComandos: WHILE L_PAREN Expressao R_PAREN Bloco  */
-#line 156 "sintatico.y"
-                                                                 {}
-#line 1617 "sintatico.tab.c"
+#line 162 "sintatico.y"
+                                                {}
+#line 1627 "sintatico.tab.c"
     break;
 
   case 40: /* ListaComandos: FOR L_PAREN OpExpressao SEMICOLON OpExpressao SEMICOLON OpExpressao R_PAREN Bloco  */
-#line 157 "sintatico.y"
-                                                                                                             {}
-#line 1623 "sintatico.tab.c"
+#line 163 "sintatico.y"
+                                                                                            {}
+#line 1633 "sintatico.tab.c"
     break;
 
   case 41: /* ListaComandos: PRINTF L_PAREN STRING OpVirgulaExpressao R_PAREN SEMICOLON  */
-#line 158 "sintatico.y"
-                                                                                      {}
-#line 1629 "sintatico.tab.c"
+#line 164 "sintatico.y"
+                                                                     {}
+#line 1639 "sintatico.tab.c"
     break;
 
-  case 42: /* ListaComandos: SCANF L_PAREN STRING COMMA AMPERSAND IDENTIFIER R_PAREN SEMICOLON  */
-#line 159 "sintatico.y"
-                                                                                             {}
-#line 1635 "sintatico.tab.c"
+  case 42: /* ListaComandos: SCANF L_PAREN STRING COMMA BITWISE_AND IDENTIFIER R_PAREN SEMICOLON  */
+#line 165 "sintatico.y"
+                                                                              {}
+#line 1645 "sintatico.tab.c"
     break;
 
   case 43: /* ListaComandos: EXIT L_PAREN Expressao R_PAREN SEMICOLON  */
-#line 160 "sintatico.y"
-                                                                    {}
-#line 1641 "sintatico.tab.c"
+#line 166 "sintatico.y"
+                                                   {}
+#line 1651 "sintatico.tab.c"
     break;
 
   case 44: /* ListaComandos: RETURN OpExpressao SEMICOLON  */
-#line 161 "sintatico.y"
-                                                        {}
-#line 1647 "sintatico.tab.c"
+#line 167 "sintatico.y"
+                                       {}
+#line 1657 "sintatico.tab.c"
     break;
 
   case 45: /* ListaComandos: Expressao SEMICOLON  */
-#line 162 "sintatico.y"
-                                               {}
-#line 1653 "sintatico.tab.c"
+#line 168 "sintatico.y"
+                              {}
+#line 1663 "sintatico.tab.c"
     break;
 
   case 46: /* ListaComandos: SEMICOLON  */
-#line 163 "sintatico.y"
-                         {}
-#line 1659 "sintatico.tab.c"
+#line 169 "sintatico.y"
+                    {}
+#line 1669 "sintatico.tab.c"
     break;
 
   case 47: /* ListaComandos: Bloco  */
-#line 164 "sintatico.y"
-                                 {}
-#line 1665 "sintatico.tab.c"
+#line 170 "sintatico.y"
+                {}
+#line 1675 "sintatico.tab.c"
     break;
 
   case 48: /* OpElse: ELSE Bloco  */
-#line 167 "sintatico.y"
+#line 173 "sintatico.y"
                    {}
-#line 1671 "sintatico.tab.c"
+#line 1681 "sintatico.tab.c"
     break;
 
   case 49: /* OpElse: %empty  */
-#line 168 "sintatico.y"
-            {}
-#line 1677 "sintatico.tab.c"
+#line 174 "sintatico.y"
+          {}
+#line 1687 "sintatico.tab.c"
     break;
 
   case 50: /* OpExpressao: Expressao  */
-#line 171 "sintatico.y"
+#line 177 "sintatico.y"
                        {}
-#line 1683 "sintatico.tab.c"
+#line 1693 "sintatico.tab.c"
     break;
 
   case 51: /* OpExpressao: %empty  */
-#line 172 "sintatico.y"
-                     {}
-#line 1689 "sintatico.tab.c"
+#line 178 "sintatico.y"
+          {}
+#line 1699 "sintatico.tab.c"
     break;
 
   case 52: /* OpVirgulaExpressao: COMMA Expressao  */
-#line 175 "sintatico.y"
+#line 181 "sintatico.y"
                                     {}
-#line 1695 "sintatico.tab.c"
+#line 1705 "sintatico.tab.c"
     break;
 
   case 53: /* OpVirgulaExpressao: %empty  */
-#line 176 "sintatico.y"
-                                    {}
-#line 1701 "sintatico.tab.c"
+#line 182 "sintatico.y"
+          {}
+#line 1711 "sintatico.tab.c"
     break;
 
   case 54: /* Expressao: ExpressaoAtribuicao ExpressaoPrime  */
-#line 179 "sintatico.y"
+#line 185 "sintatico.y"
                                               {}
-#line 1707 "sintatico.tab.c"
+#line 1717 "sintatico.tab.c"
     break;
 
   case 55: /* ExpressaoPrime: COMMA Expressao  */
-#line 182 "sintatico.y"
+#line 188 "sintatico.y"
                                 {}
-#line 1713 "sintatico.tab.c"
+#line 1723 "sintatico.tab.c"
     break;
 
   case 56: /* ExpressaoPrime: %empty  */
-#line 183 "sintatico.y"
-                    {}
-#line 1719 "sintatico.tab.c"
+#line 189 "sintatico.y"
+          {}
+#line 1729 "sintatico.tab.c"
     break;
 
   case 57: /* ExpressaoAtribuicao: ExpressaoCondicional  */
-#line 186 "sintatico.y"
+#line 192 "sintatico.y"
                                           {}
-#line 1725 "sintatico.tab.c"
+#line 1735 "sintatico.tab.c"
     break;
 
   case 58: /* ExpressaoAtribuicao: ExpressaoUnaria AtribuicaoOperador ExpressaoAtribuicao  */
-#line 187 "sintatico.y"
-                                                                                            {}
-#line 1731 "sintatico.tab.c"
+#line 193 "sintatico.y"
+                                                                 {}
+#line 1741 "sintatico.tab.c"
     break;
 
   case 59: /* AtribuicaoOperador: ASSIGN  */
-#line 190 "sintatico.y"
+#line 196 "sintatico.y"
                            {}
-#line 1737 "sintatico.tab.c"
+#line 1747 "sintatico.tab.c"
     break;
 
-  case 60: /* AtribuicaoOperador: PLUS_ASSIGN  */
-#line 191 "sintatico.y"
-                                            {}
-#line 1743 "sintatico.tab.c"
+  case 60: /* AtribuicaoOperador: ADD_ASSIGN  */
+#line 197 "sintatico.y"
+                     {}
+#line 1753 "sintatico.tab.c"
     break;
 
   case 61: /* AtribuicaoOperador: MINUS_ASSIGN  */
-#line 192 "sintatico.y"
-                                                 {}
-#line 1749 "sintatico.tab.c"
+#line 198 "sintatico.y"
+                       {}
+#line 1759 "sintatico.tab.c"
     break;
 
   case 62: /* ExpressaoCondicional: ExpressaoOrLogico ExpressaoCondicionalPrime  */
-#line 195 "sintatico.y"
+#line 201 "sintatico.y"
                                                                   {}
-#line 1755 "sintatico.tab.c"
+#line 1765 "sintatico.tab.c"
     break;
 
-  case 63: /* ExpressaoCondicionalPrime: QUESTION Expressao COLON ExpressaoCondicional  */
-#line 198 "sintatico.y"
-                                                                         {}
-#line 1761 "sintatico.tab.c"
+  case 63: /* ExpressaoCondicionalPrime: TERNARY_CONDITIONAL Expressao COLON ExpressaoCondicional  */
+#line 204 "sintatico.y"
+                                                                                    {}
+#line 1771 "sintatico.tab.c"
     break;
 
   case 64: /* ExpressaoCondicionalPrime: %empty  */
-#line 199 "sintatico.y"
-                                           {}
-#line 1767 "sintatico.tab.c"
+#line 205 "sintatico.y"
+          {}
+#line 1777 "sintatico.tab.c"
     break;
 
   case 65: /* ExpressaoOrLogico: ExpressaoAndLogico ExpressaoOrLogicoPrime  */
-#line 202 "sintatico.y"
+#line 208 "sintatico.y"
                                                              {}
-#line 1773 "sintatico.tab.c"
+#line 1783 "sintatico.tab.c"
     break;
 
-  case 66: /* ExpressaoOrLogicoPrime: OR ExpressaoOrLogico  */
-#line 204 "sintatico.y"
-                                             {}
-#line 1779 "sintatico.tab.c"
+  case 66: /* ExpressaoOrLogicoPrime: LOGICAL_OR ExpressaoOrLogico  */
+#line 211 "sintatico.y"
+                                                     {}
+#line 1789 "sintatico.tab.c"
     break;
 
   case 67: /* ExpressaoOrLogicoPrime: %empty  */
-#line 205 "sintatico.y"
-                                    {}
-#line 1785 "sintatico.tab.c"
+#line 212 "sintatico.y"
+          {}
+#line 1795 "sintatico.tab.c"
     break;
 
   case 68: /* ExpressaoAndLogico: ExpressaoOr ExpressaoAndLogicoPrime  */
-#line 208 "sintatico.y"
+#line 215 "sintatico.y"
                                                         {}
-#line 1791 "sintatico.tab.c"
+#line 1801 "sintatico.tab.c"
     break;
 
-  case 69: /* ExpressaoAndLogicoPrime: AND ExpressaoAndLogico  */
-#line 211 "sintatico.y"
-                                                {}
-#line 1797 "sintatico.tab.c"
+  case 69: /* ExpressaoAndLogicoPrime: LOGICAL_AND ExpressaoAndLogico  */
+#line 218 "sintatico.y"
+                                                        {}
+#line 1807 "sintatico.tab.c"
     break;
 
   case 70: /* ExpressaoAndLogicoPrime: %empty  */
-#line 212 "sintatico.y"
-                                 {}
-#line 1803 "sintatico.tab.c"
+#line 219 "sintatico.y"
+          {}
+#line 1813 "sintatico.tab.c"
     break;
 
   case 71: /* ExpressaoOr: ExpressaoXor ExpressaoOrPrime  */
-#line 215 "sintatico.y"
+#line 222 "sintatico.y"
                                            {}
-#line 1809 "sintatico.tab.c"
+#line 1819 "sintatico.tab.c"
+    break;
+
+  case 72: /* ExpressaoOrPrime: BITWISE_OR ExpressaoOr  */
+#line 225 "sintatico.y"
+                                         {}
+#line 1825 "sintatico.tab.c"
     break;
 
   case 73: /* ExpressaoOrPrime: %empty  */
-#line 219 "sintatico.y"
-                          {}
-#line 1815 "sintatico.tab.c"
+#line 226 "sintatico.y"
+          {}
+#line 1831 "sintatico.tab.c"
     break;
 
   case 74: /* ExpressaoXor: ExpressaoAnd ExpressaoXorPrime  */
-#line 222 "sintatico.y"
+#line 229 "sintatico.y"
                                              {}
-#line 1821 "sintatico.tab.c"
+#line 1837 "sintatico.tab.c"
     break;
 
   case 75: /* ExpressaoXorPrime: BITWISE_XOR ExpressaoXor  */
-#line 225 "sintatico.y"
+#line 232 "sintatico.y"
                                             {}
-#line 1827 "sintatico.tab.c"
+#line 1843 "sintatico.tab.c"
     break;
 
   case 76: /* ExpressaoXorPrime: %empty  */
-#line 226 "sintatico.y"
-                       {}
-#line 1833 "sintatico.tab.c"
+#line 233 "sintatico.y"
+          {}
+#line 1849 "sintatico.tab.c"
     break;
 
   case 77: /* ExpressaoAnd: ExpressaoIgualdade ExpressaoAndPrime  */
-#line 229 "sintatico.y"
+#line 236 "sintatico.y"
                                                    {}
-#line 1839 "sintatico.tab.c"
+#line 1855 "sintatico.tab.c"
     break;
 
-  case 78: /* ExpressaoAndPrime: AMPERSAND ExpressaoAnd  */
-#line 232 "sintatico.y"
-                                          {}
-#line 1845 "sintatico.tab.c"
+  case 78: /* ExpressaoAndPrime: BITWISE_AND ExpressaoAnd  */
+#line 239 "sintatico.y"
+                                            {}
+#line 1861 "sintatico.tab.c"
     break;
 
   case 79: /* ExpressaoAndPrime: %empty  */
-#line 233 "sintatico.y"
-                           {}
-#line 1851 "sintatico.tab.c"
+#line 240 "sintatico.y"
+          {}
+#line 1867 "sintatico.tab.c"
     break;
 
   case 80: /* ExpressaoIgualdade: ExpressaoRelacional ExpressaoIgualdadePrime  */
-#line 238 "sintatico.y"
+#line 243 "sintatico.y"
                                                                 {}
-#line 1857 "sintatico.tab.c"
+#line 1873 "sintatico.tab.c"
     break;
 
   case 81: /* ExpressaoIgualdadePrime: IgualdadeOperador ExpressaoIgualdade  */
-#line 240 "sintatico.y"
+#line 246 "sintatico.y"
                                                               {}
-#line 1863 "sintatico.tab.c"
+#line 1879 "sintatico.tab.c"
     break;
 
   case 82: /* ExpressaoIgualdadePrime: %empty  */
-#line 241 "sintatico.y"
-                                 {}
-#line 1869 "sintatico.tab.c"
+#line 247 "sintatico.y"
+          {}
+#line 1885 "sintatico.tab.c"
     break;
 
   case 83: /* IgualdadeOperador: EQUAL  */
-#line 243 "sintatico.y"
+#line 250 "sintatico.y"
                          {}
-#line 1875 "sintatico.tab.c"
+#line 1891 "sintatico.tab.c"
     break;
 
   case 84: /* IgualdadeOperador: NOT_EQUAL  */
-#line 244 "sintatico.y"
-                                             {}
-#line 1881 "sintatico.tab.c"
+#line 251 "sintatico.y"
+                    {}
+#line 1897 "sintatico.tab.c"
     break;
 
   case 85: /* ExpressaoRelacional: ExpressaoShift ExpressaoRelacionalPrime  */
-#line 248 "sintatico.y"
+#line 254 "sintatico.y"
                                                              {}
-#line 1887 "sintatico.tab.c"
+#line 1903 "sintatico.tab.c"
     break;
 
-  case 86: /* ExpressaoRelacionalPrime: RelacionalOperador ExpressaoRelacional  */
-#line 250 "sintatico.y"
+  case 86: /* ExpressaoRelacionalPrime: OperadorRelacional ExpressaoRelacional  */
+#line 257 "sintatico.y"
                                                                  {}
-#line 1893 "sintatico.tab.c"
+#line 1909 "sintatico.tab.c"
     break;
 
   case 87: /* ExpressaoRelacionalPrime: %empty  */
-#line 251 "sintatico.y"
-                                      {}
-#line 1899 "sintatico.tab.c"
+#line 258 "sintatico.y"
+          {}
+#line 1915 "sintatico.tab.c"
     break;
 
-  case 88: /* RelacionalOperador: LESS_THAN  */
-#line 253 "sintatico.y"
+  case 88: /* OperadorRelacional: LESS_THAN  */
+#line 261 "sintatico.y"
                               {}
-#line 1905 "sintatico.tab.c"
+#line 1921 "sintatico.tab.c"
     break;
 
-  case 89: /* RelacionalOperador: LESS_EQUAL  */
-#line 254 "sintatico.y"
-                                               {}
-#line 1911 "sintatico.tab.c"
+  case 89: /* OperadorRelacional: LESS_EQUAL  */
+#line 262 "sintatico.y"
+                     {}
+#line 1927 "sintatico.tab.c"
     break;
 
-  case 90: /* RelacionalOperador: GREATER_THAN  */
-#line 255 "sintatico.y"
-                                                 {}
-#line 1917 "sintatico.tab.c"
+  case 90: /* OperadorRelacional: GREATER_THAN  */
+#line 263 "sintatico.y"
+                       {}
+#line 1933 "sintatico.tab.c"
     break;
 
-  case 91: /* RelacionalOperador: GREATER_EQUAL  */
-#line 256 "sintatico.y"
-                                                  {}
-#line 1923 "sintatico.tab.c"
+  case 91: /* OperadorRelacional: GREATER_EQUAL  */
+#line 264 "sintatico.y"
+                        {}
+#line 1939 "sintatico.tab.c"
     break;
 
   case 92: /* ExpressaoShift: ExpressaoAditiva ExpressaoShiftPrime  */
-#line 260 "sintatico.y"
+#line 267 "sintatico.y"
                                                      {}
-#line 1929 "sintatico.tab.c"
+#line 1945 "sintatico.tab.c"
     break;
 
-  case 93: /* ExpressaoShiftPrime: ShiftOperador ExpressaoShift  */
-#line 262 "sintatico.y"
-                                                  {}
-#line 1935 "sintatico.tab.c"
+  case 93: /* ExpressaoShiftPrime: Shift ExpressaoShift  */
+#line 270 "sintatico.y"
+                                          {}
+#line 1951 "sintatico.tab.c"
     break;
 
   case 94: /* ExpressaoShiftPrime: %empty  */
-#line 263 "sintatico.y"
-                             {}
-#line 1941 "sintatico.tab.c"
+#line 271 "sintatico.y"
+          {}
+#line 1957 "sintatico.tab.c"
     break;
 
-  case 95: /* ShiftOperador: L_SHIFT  */
-#line 265 "sintatico.y"
-                       {}
-#line 1947 "sintatico.tab.c"
+  case 95: /* Shift: L_SHIFT  */
+#line 274 "sintatico.y"
+                {}
+#line 1963 "sintatico.tab.c"
     break;
 
-  case 96: /* ShiftOperador: R_SHIFT  */
-#line 266 "sintatico.y"
-                                   {}
-#line 1953 "sintatico.tab.c"
+  case 96: /* Shift: R_SHIFT  */
+#line 275 "sintatico.y"
+                  {}
+#line 1969 "sintatico.tab.c"
     break;
 
   case 97: /* ExpressaoAditiva: ExpressaoMultiplicativa ExpressaoAditivaPrime  */
-#line 270 "sintatico.y"
+#line 278 "sintatico.y"
                                                                 {}
-#line 1959 "sintatico.tab.c"
+#line 1975 "sintatico.tab.c"
     break;
 
-  case 98: /* ExpressaoAditivaPrime: AdicaoOperador ExpressaoAditiva  */
-#line 272 "sintatico.y"
-                                                       {}
-#line 1965 "sintatico.tab.c"
+  case 98: /* ExpressaoAditivaPrime: MaisMenos ExpressaoAditiva  */
+#line 281 "sintatico.y"
+                                                  {}
+#line 1981 "sintatico.tab.c"
     break;
 
   case 99: /* ExpressaoAditivaPrime: %empty  */
-#line 273 "sintatico.y"
-                                   {}
-#line 1971 "sintatico.tab.c"
+#line 282 "sintatico.y"
+          {}
+#line 1987 "sintatico.tab.c"
     break;
 
-  case 100: /* AdicaoOperador: MINUS  */
-#line 275 "sintatico.y"
-                      {}
-#line 1977 "sintatico.tab.c"
+  case 100: /* MaisMenos: PLUS  */
+#line 285 "sintatico.y"
+                {}
+#line 1993 "sintatico.tab.c"
     break;
 
-  case 101: /* AdicaoOperador: PLUS  */
-#line 276 "sintatico.y"
-                                 {}
-#line 1983 "sintatico.tab.c"
+  case 101: /* MaisMenos: MINUS  */
+#line 286 "sintatico.y"
+                {}
+#line 1999 "sintatico.tab.c"
     break;
 
   case 102: /* ExpressaoMultiplicativa: ExpressaoCast ExpressaoMultiplicativaPrime  */
-#line 280 "sintatico.y"
+#line 289 "sintatico.y"
                                                                     {}
-#line 1989 "sintatico.tab.c"
+#line 2005 "sintatico.tab.c"
     break;
 
-  case 103: /* ExpressaoMultiplicativaPrime: MultOperador ExpressaoMultiplicativa  */
-#line 282 "sintatico.y"
-                                                                   {}
-#line 1995 "sintatico.tab.c"
+  case 103: /* ExpressaoMultiplicativaPrime: Multiplicadores ExpressaoMultiplicativa  */
+#line 292 "sintatico.y"
+                                                                      {}
+#line 2011 "sintatico.tab.c"
     break;
 
   case 104: /* ExpressaoMultiplicativaPrime: %empty  */
-#line 283 "sintatico.y"
-                                              {}
-#line 2001 "sintatico.tab.c"
+#line 293 "sintatico.y"
+          {}
+#line 2017 "sintatico.tab.c"
     break;
 
-  case 105: /* MultOperador: TIMES  */
-#line 285 "sintatico.y"
+  case 105: /* Multiplicadores: MULTIPLY  */
+#line 296 "sintatico.y"
+                          {}
+#line 2023 "sintatico.tab.c"
+    break;
+
+  case 106: /* Multiplicadores: DIV  */
+#line 297 "sintatico.y"
+              {}
+#line 2029 "sintatico.tab.c"
+    break;
+
+  case 107: /* Multiplicadores: REMAINDER  */
+#line 298 "sintatico.y"
                     {}
-#line 2007 "sintatico.tab.c"
-    break;
-
-  case 106: /* MultOperador: DIV  */
-#line 286 "sintatico.y"
-                              {}
-#line 2013 "sintatico.tab.c"
-    break;
-
-  case 107: /* MultOperador: MOD  */
-#line 287 "sintatico.y"
-                              {}
-#line 2019 "sintatico.tab.c"
+#line 2035 "sintatico.tab.c"
     break;
 
   case 108: /* ExpressaoCast: ExpressaoUnaria  */
-#line 291 "sintatico.y"
+#line 301 "sintatico.y"
                                {}
-#line 2025 "sintatico.tab.c"
+#line 2041 "sintatico.tab.c"
     break;
 
-  case 109: /* ExpressaoCast: L_PAREN Tipo VezesLoop R_PAREN ExpressaoCast  */
-#line 292 "sintatico.y"
-                                                                        {}
-#line 2031 "sintatico.tab.c"
+  case 109: /* ExpressaoCast: L_PAREN Tipo PointerIter R_PAREN ExpressaoCast  */
+#line 302 "sintatico.y"
+                                                         {}
+#line 2047 "sintatico.tab.c"
     break;
 
   case 110: /* ExpressaoUnaria: ExpressaoPosFixa  */
-#line 295 "sintatico.y"
+#line 305 "sintatico.y"
                                   {}
-#line 2037 "sintatico.tab.c"
+#line 2053 "sintatico.tab.c"
     break;
 
   case 111: /* ExpressaoUnaria: INC ExpressaoUnaria  */
-#line 296 "sintatico.y"
-                                                 {}
-#line 2043 "sintatico.tab.c"
+#line 306 "sintatico.y"
+                              {}
+#line 2059 "sintatico.tab.c"
     break;
 
   case 112: /* ExpressaoUnaria: DEC ExpressaoUnaria  */
-#line 297 "sintatico.y"
-                                                 {}
-#line 2049 "sintatico.tab.c"
+#line 307 "sintatico.y"
+                              {}
+#line 2065 "sintatico.tab.c"
     break;
 
-  case 113: /* ExpressaoUnaria: UnarioOperador ExpressaoCast  */
-#line 298 "sintatico.y"
-                                                          {}
-#line 2055 "sintatico.tab.c"
+  case 113: /* ExpressaoUnaria: OperadorUnario ExpressaoCast  */
+#line 308 "sintatico.y"
+                                       {}
+#line 2071 "sintatico.tab.c"
     break;
 
-  case 114: /* UnarioOperador: AMPERSAND  */
-#line 301 "sintatico.y"
-                          {}
-#line 2061 "sintatico.tab.c"
+  case 114: /* OperadorUnario: BITWISE_AND  */
+#line 311 "sintatico.y"
+                            {}
+#line 2077 "sintatico.tab.c"
     break;
 
-  case 115: /* UnarioOperador: TIMES  */
-#line 302 "sintatico.y"
-                                  {}
-#line 2067 "sintatico.tab.c"
+  case 115: /* OperadorUnario: MULTIPLY  */
+#line 312 "sintatico.y"
+                   {}
+#line 2083 "sintatico.tab.c"
     break;
 
-  case 116: /* UnarioOperador: PLUS  */
-#line 303 "sintatico.y"
-                                 {}
-#line 2073 "sintatico.tab.c"
+  case 116: /* OperadorUnario: PLUS  */
+#line 313 "sintatico.y"
+               {}
+#line 2089 "sintatico.tab.c"
     break;
 
-  case 117: /* UnarioOperador: MINUS  */
-#line 304 "sintatico.y"
-                                  {}
-#line 2079 "sintatico.tab.c"
+  case 117: /* OperadorUnario: MINUS  */
+#line 314 "sintatico.y"
+                {}
+#line 2095 "sintatico.tab.c"
     break;
 
-  case 118: /* UnarioOperador: BITWISE_COMP  */
-#line 305 "sintatico.y"
-                                         {}
-#line 2085 "sintatico.tab.c"
+  case 118: /* OperadorUnario: BITWISE_NOT  */
+#line 315 "sintatico.y"
+                      {}
+#line 2101 "sintatico.tab.c"
     break;
 
-  case 119: /* UnarioOperador: NOT  */
-#line 306 "sintatico.y"
-                                {}
-#line 2091 "sintatico.tab.c"
+  case 119: /* OperadorUnario: NOT  */
+#line 316 "sintatico.y"
+              {}
+#line 2107 "sintatico.tab.c"
     break;
 
   case 120: /* ExpressaoPosFixa: ExpressaoPrimaria  */
-#line 309 "sintatico.y"
+#line 319 "sintatico.y"
                                     {}
-#line 2097 "sintatico.tab.c"
+#line 2113 "sintatico.tab.c"
     break;
 
   case 121: /* ExpressaoPosFixa: ExpressaoPosFixa ExpressaoPosFixaPrime  */
-#line 310 "sintatico.y"
-                                                                     {}
-#line 2103 "sintatico.tab.c"
+#line 320 "sintatico.y"
+                                                 {}
+#line 2119 "sintatico.tab.c"
     break;
 
   case 122: /* ExpressaoPosFixaPrime: L_SQUARE_BRACKET Expressao R_SQUARE_BRACKET  */
-#line 313 "sintatico.y"
+#line 323 "sintatico.y"
                                                                    {}
-#line 2109 "sintatico.tab.c"
+#line 2125 "sintatico.tab.c"
     break;
 
   case 123: /* ExpressaoPosFixaPrime: INC  */
-#line 314 "sintatico.y"
-                                   {}
-#line 2115 "sintatico.tab.c"
+#line 324 "sintatico.y"
+              {}
+#line 2131 "sintatico.tab.c"
     break;
 
   case 124: /* ExpressaoPosFixaPrime: DEC  */
-#line 315 "sintatico.y"
-                                       {}
-#line 2121 "sintatico.tab.c"
+#line 325 "sintatico.y"
+              {}
+#line 2137 "sintatico.tab.c"
     break;
 
-  case 125: /* ExpressaoPosFixaPrime: L_PAREN OpExpressaoAtribuicaoLoop R_PAREN  */
-#line 316 "sintatico.y"
-                                                                             {}
-#line 2127 "sintatico.tab.c"
-    break;
-
-  case 126: /* OpExpressaoAtribuicaoLoop: ExpressaoAtribuicaoLoop  */
-#line 319 "sintatico.y"
-                                                   {}
-#line 2133 "sintatico.tab.c"
-    break;
-
-  case 127: /* OpExpressaoAtribuicaoLoop: %empty  */
-#line 320 "sintatico.y"
-                                               {}
-#line 2139 "sintatico.tab.c"
-    break;
-
-  case 128: /* ExpressaoAtribuicaoLoop: ExpressaoAtribuicao ExpressaoAtribuicaoLoopPrime  */
-#line 323 "sintatico.y"
-                                                                          {}
-#line 2145 "sintatico.tab.c"
-    break;
-
-  case 129: /* ExpressaoAtribuicaoLoopPrime: COMMA ExpressaoAtribuicaoLoop  */
+  case 125: /* ExpressaoPosFixaPrime: L_PAREN OpExpressaoAtribuicaoIter R_PAREN  */
 #line 326 "sintatico.y"
-                                                            {}
-#line 2151 "sintatico.tab.c"
+                                                    {}
+#line 2143 "sintatico.tab.c"
     break;
 
-  case 130: /* ExpressaoAtribuicaoLoopPrime: %empty  */
-#line 327 "sintatico.y"
-                                              {}
-#line 2157 "sintatico.tab.c"
+  case 126: /* OpExpressaoAtribuicaoIter: ExpressaoAtribuicaoIter  */
+#line 329 "sintatico.y"
+                                                   {}
+#line 2149 "sintatico.tab.c"
+    break;
+
+  case 127: /* OpExpressaoAtribuicaoIter: %empty  */
+#line 330 "sintatico.y"
+          {}
+#line 2155 "sintatico.tab.c"
+    break;
+
+  case 128: /* ExpressaoAtribuicaoIter: ExpressaoAtribuicao ExpressaoAtribuicaoIterPrime  */
+#line 333 "sintatico.y"
+                                                                          {}
+#line 2161 "sintatico.tab.c"
+    break;
+
+  case 129: /* ExpressaoAtribuicaoIterPrime: COMMA ExpressaoAtribuicaoIter  */
+#line 336 "sintatico.y"
+                                                            {}
+#line 2167 "sintatico.tab.c"
+    break;
+
+  case 130: /* ExpressaoAtribuicaoIterPrime: %empty  */
+#line 337 "sintatico.y"
+          {}
+#line 2173 "sintatico.tab.c"
     break;
 
   case 131: /* ExpressaoPrimaria: IDENTIFIER  */
-#line 330 "sintatico.y"
+#line 340 "sintatico.y"
                               {}
-#line 2163 "sintatico.tab.c"
+#line 2179 "sintatico.tab.c"
     break;
 
   case 132: /* ExpressaoPrimaria: Numero  */
-#line 331 "sintatico.y"
-                                          {}
-#line 2169 "sintatico.tab.c"
+#line 341 "sintatico.y"
+                 {}
+#line 2185 "sintatico.tab.c"
     break;
 
   case 133: /* ExpressaoPrimaria: CHARACTER  */
-#line 332 "sintatico.y"
-                                             {}
-#line 2175 "sintatico.tab.c"
+#line 342 "sintatico.y"
+                    {}
+#line 2191 "sintatico.tab.c"
     break;
 
   case 134: /* ExpressaoPrimaria: STRING  */
-#line 333 "sintatico.y"
-                                          {}
-#line 2181 "sintatico.tab.c"
+#line 343 "sintatico.y"
+                 {}
+#line 2197 "sintatico.tab.c"
     break;
 
   case 135: /* ExpressaoPrimaria: L_PAREN Expressao R_PAREN  */
-#line 334 "sintatico.y"
-                                                             {}
-#line 2187 "sintatico.tab.c"
+#line 344 "sintatico.y"
+                                    {}
+#line 2203 "sintatico.tab.c"
     break;
 
   case 136: /* Numero: NUM_INTEGER  */
-#line 337 "sintatico.y"
+#line 347 "sintatico.y"
                     {}
-#line 2193 "sintatico.tab.c"
+#line 2209 "sintatico.tab.c"
     break;
 
   case 137: /* Numero: NUM_HEXA  */
-#line 338 "sintatico.y"
-                     {}
-#line 2199 "sintatico.tab.c"
+#line 348 "sintatico.y"
+                   {}
+#line 2215 "sintatico.tab.c"
     break;
 
   case 138: /* Numero: NUM_OCTAL  */
-#line 339 "sintatico.y"
-                      {}
-#line 2205 "sintatico.tab.c"
+#line 349 "sintatico.y"
+                    {}
+#line 2221 "sintatico.tab.c"
     break;
 
 
-#line 2209 "sintatico.tab.c"
+#line 2225 "sintatico.tab.c"
 
       default: break;
     }
@@ -2398,13 +2414,13 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 342 "sintatico.y"
+#line 352 "sintatico.y"
 
 
 void yyerror(char *s){
-	int columnError = column-((int)strlen(yytext));
-	printf("error:syntax:%d:%d: %s\n", line, columnError, yytext);
-	printf("%s", current_line);
+	int columnError = coluna-((int)strlen(yytext));
+	printf("error:syntax:%d:%d: %s\n", linha, columnError, yytext);
+	printf("%s", yytext);
 	int i;
 	for(i = 0; i < columnError-1; i++)
 		printf(" ");
