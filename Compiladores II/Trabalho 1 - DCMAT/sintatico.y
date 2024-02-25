@@ -3,6 +3,8 @@
 
     extern int yylex();
     extern char* yytext;
+
+    void yyerror(char *s);
 %}
 
 %token PLUS
@@ -56,11 +58,120 @@
 %token X
 %token IDENTIFIER
 %token LEXICAL_ERROR
+%token NEW_LINE
+
+%left PLUS MINUS
+%left MUL DIV MOD
+%left EXP
 
 %start Programa
 
 %%
 
+Programa: Statement NEW_LINE { return 0; }
+;
 
+Statement: ABOUT SEMICOLON {}
+    | IDENTIFIER AttribIdentifier SEMICOLON {}
+    | INTEGRATE L_PAREN Number COLON Number COMMA Expr R_PAREN SEMICOLON {}
+    | MATRIX EQUALS AttribMatrix SEMICOLON {}
+    | PLOT AsFunc SEMICOLON {}
+    | QUIT { return 1; }
+    | RESET SETTINGS SEMICOLON {}
+    | RPN L_PAREN Expr R_PAREN SEMICOLON {}
+    | SET SettingOptions SEMICOLON {}
+    | SHOW ShowOptions SEMICOLON {}
+    | SOLVE SolveOptions SEMICOLON {}
+    | SUM L_PAREN IDENTIFIER COMMA INT COLON INT COMMA Expr R_PAREN SEMICOLON {}
+    | Expr {}
+;
+
+ShowOptions: SETTINGS {}
+    | MATRIX {}
+    | SYMBOLS {}
+;
+
+SettingOptions: H_VIEW REAL COLON REAL {}
+    | V_VIEW REAL COLON REAL {}
+    | AXIS BoolOptions {}
+    | ERASE PLOT BoolOptions {}
+    | INTEGRAL_STEPS INT {}
+    | FLOAT PRECISION INT {}
+    | CONNECT_DOTS BoolOptions {}
+;
+
+BoolOptions: ON {}
+    | OFF {}
+;
+
+AsFunc: L_PAREN Expr R_PAREN {}
+    | {}
+;
+
+AttribMatrix: L_SQUARE_BRACKET Dimensions DimensionsList R_SQUARE_BRACKET {}
+;
+
+Dimensions: L_SQUARE_BRACKET Number NumbersList R_SQUARE_BRACKET {}
+;
+
+NumbersList: COMMA Number NumbersList
+    | {}
+;
+
+DimensionsList: COMMA Dimensions DimensionsList {}
+    | {}
+;
+
+Number: INT {}
+    | REAL {}
+    | MathConstants {}
+;
+
+MathConstants: PI {}
+    | EULER {}
+;
+
+SolveOptions: DETERMINANT {}
+    | LINEAR_SYSTEM {}
+;
+
+AttribIdentifier: ATTRIB Expr {}
+    | ATTRIB AttribMatrix {}
+    | {}
+;
+
+Function: ABS L_PAREN Expr R_PAREN {}
+    | COS L_PAREN Expr R_PAREN {}
+    | SIN L_PAREN Expr R_PAREN {}
+    | TAN L_PAREN Expr R_PAREN {}
+;
+
+Expr: Number {}
+    | Function {}
+    | IDENTIFIER {}
+    | X {}
+    | L_PAREN Expr R_PAREN {}
+    | Expr PLUS Expr {}
+    | Expr MINUS Expr {}
+    | Expr MUL Expr {}
+    | Expr DIV Expr {}
+    | Expr EXP Expr {}
+    | Expr MOD Expr {}
+    | MINUS Expr {}
+;
 
 %%
+
+void yyerror(char *s) {
+    printf("\n%s\nERROR\n", s);
+}
+
+int main(int argc, char **argv) {
+    printf("> ");
+    
+    while(!yyparse()) {
+        printf("\n> ");
+    }
+
+    return 0;
+}
