@@ -1,7 +1,6 @@
 %{
-    #include <iostream>
-
     #include "Settings.h"
+    #include "SettingsOptionsManager.h"
 
     extern int yylex();
     extern char* yytext;
@@ -9,10 +8,20 @@
     void yyerror(char *s);
 
     Settings settings = Settings();
+    SettingsOptionsManager optionsManager = SettingsOptionsManager();
 %}
+
+%code requires {
+    #include <iostream>
+    #include <cstring>
+    #include <cstdlib>
+}
 
 %union {
     char *str;
+    float f;
+    int i;
+    void *set_opt_man;
 }
 
 %token PLUS
@@ -30,8 +39,8 @@
 %token R_SQUARE_BRACKET
 %token SEMICOLON
 %token COMMA
-%token INT
-%token REAL
+%token <i> INT
+%token <f> REAL
 %token ABOUT
 %token ABS
 %token AXIS
@@ -65,7 +74,6 @@
 %token V_VIEW
 %token X
 %token IDENTIFIER
-%token LEXICAL_ERROR
 %token NEW_LINE
 
 %left PLUS MINUS
@@ -74,7 +82,9 @@
 
 %start Programa
 
-%type<str> ShowOptions
+%type<str> ShowOptions Expr Number 
+%type <f> MathConstants
+%type<set_opt_man> SettingOptions
 
 %%
 
@@ -95,7 +105,7 @@ Statement: ABOUT SEMICOLON {
     | QUIT { return 1; }
     | RESET SETTINGS SEMICOLON {}
     | RPN L_PAREN Expr R_PAREN SEMICOLON {}
-    | SET SettingOptions SEMICOLON {}
+    | SET SettingOptions SEMICOLON { optionsManager.applyOptionChanges(settings); }
     | SHOW ShowOptions SEMICOLON {
         std::cout << $2;
         free($2);
@@ -110,7 +120,19 @@ ShowOptions: SETTINGS { $$ = settings.printSettings(); }
     | SYMBOLS {}
 ;
 
-SettingOptions: H_VIEW Expr COLON Expr {}
+SettingOptions: H_VIEW Expr COLON Expr {
+        char option[7] = "h_view";
+
+        char **values = (char **) malloc(2 * sizeof(char *));
+        values[0] = (char *) malloc((30) * sizeof(char));
+        values[1] = (char *) malloc((30) * sizeof(char));
+
+        sprintf(values[0], "%s", $2);
+        sprintf(values[1], "%s", $4);
+
+        optionsManager.setOption(option);
+        optionsManager.setValues(values);
+    }
     | V_VIEW Expr COLON Expr {}
     | AXIS BoolOptions {}
     | ERASE PLOT BoolOptions {}
@@ -141,13 +163,28 @@ DimensionsList: COMMA Dimensions DimensionsList {}
     | {}
 ;
 
-Number: INT {}
-    | REAL {}
-    | MathConstants {}
+Number: INT { 
+        char *c = (char *) malloc(100 * sizeof(char));
+
+        sprintf(c, "%d", $1);
+        $$ = c;
+    }
+    | REAL { 
+        char *c = (char *) malloc(100 * sizeof(char));
+
+        sprintf(c, "%f", $1);
+        $$ = c; 
+    }
+    | MathConstants { 
+        char *c = (char *) malloc(100 * sizeof(char));
+
+        sprintf(c, "%f", $1);
+        $$ = c;  
+    }
 ;
 
-MathConstants: PI {}
-    | EULER {}
+MathConstants: PI { $$ = 3.14159265; }
+    | EULER { $$ = 2.71828182; }
 ;
 
 SolveOptions: DETERMINANT {}
@@ -165,7 +202,7 @@ Function: ABS L_PAREN Expr R_PAREN {}
     | TAN L_PAREN Expr R_PAREN {}
 ;
 
-Expr: Number {}
+Expr: Number { $$ = $1; }
     | Function {}
     | IDENTIFIER {}
     | X {}
