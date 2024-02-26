@@ -1,11 +1,19 @@
 %{
-    #include <stdio.h>
+    #include <iostream>
+
+    #include "Settings.h"
 
     extern int yylex();
     extern char* yytext;
 
     void yyerror(char *s);
+
+    Settings settings = Settings();
 %}
+
+%union {
+    char *str;
+}
 
 %token PLUS
 %token MINUS
@@ -66,12 +74,20 @@
 
 %start Programa
 
+%type<str> ShowOptions
+
 %%
 
 Programa: Statement NEW_LINE { return 0; }
 ;
 
-Statement: ABOUT SEMICOLON {}
+Statement: ABOUT SEMICOLON {
+    std::cout << "\n+----------------------------------------------+";
+    std::cout << "\n|                                              |";
+    std::cout << "\n|     202000560023 - Arthur Miasato Pimont     |";
+    std::cout << "\n|                                              |";
+    std::cout << "\n+----------------------------------------------+\n\n";
+}
     | IDENTIFIER AttribIdentifier SEMICOLON {}
     | INTEGRATE L_PAREN Number COLON Number COMMA Expr R_PAREN SEMICOLON {}
     | MATRIX EQUALS AttribMatrix SEMICOLON {}
@@ -80,19 +96,22 @@ Statement: ABOUT SEMICOLON {}
     | RESET SETTINGS SEMICOLON {}
     | RPN L_PAREN Expr R_PAREN SEMICOLON {}
     | SET SettingOptions SEMICOLON {}
-    | SHOW ShowOptions SEMICOLON {}
+    | SHOW ShowOptions SEMICOLON {
+        std::cout << $2;
+        free($2);
+    }
     | SOLVE SolveOptions SEMICOLON {}
     | SUM L_PAREN IDENTIFIER COMMA INT COLON INT COMMA Expr R_PAREN SEMICOLON {}
     | Expr {}
 ;
 
-ShowOptions: SETTINGS {}
+ShowOptions: SETTINGS { $$ = settings.printSettings(); }
     | MATRIX {}
     | SYMBOLS {}
 ;
 
-SettingOptions: H_VIEW REAL COLON REAL {}
-    | V_VIEW REAL COLON REAL {}
+SettingOptions: H_VIEW Expr COLON Expr {}
+    | V_VIEW Expr COLON Expr {}
     | AXIS BoolOptions {}
     | ERASE PLOT BoolOptions {}
     | INTEGRAL_STEPS INT {}
@@ -158,19 +177,20 @@ Expr: Number {}
     | Expr EXP Expr {}
     | Expr MOD Expr {}
     | MINUS Expr {}
+    | PLUS Expr {}
 ;
 
 %%
 
 void yyerror(char *s) {
-    printf("\n%s\nERROR\n", s);
+    std::cout << "\n" << s << "\nERROR\n";
 }
 
 int main(int argc, char **argv) {
-    printf("> ");
+    std::cout << "> ";
     
     while(!yyparse()) {
-        printf("\n> ");
+        std::cout << "> ";
     }
 
     return 0;
