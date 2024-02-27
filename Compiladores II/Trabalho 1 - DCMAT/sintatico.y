@@ -1,5 +1,6 @@
 %{
     #include "HashTable.h"
+    #include "Matrix.h"
     #include "Settings.h"
     #include "SettingsOptionsManager.h"
 
@@ -7,19 +8,15 @@
     #include <list>
     #include <cstring>
 
-    typedef struct {
-        std::list<char*> value;
-    } LISTITEM;
-
     extern int yylex();
     extern char* yytext;
 
     void yyerror(char *s);
 
+    HashTable *hashTable = new HashTable();
+
     Settings *settings = new Settings();
     SettingsOptionsManager *optionsManager = new SettingsOptionsManager();
-
-    std::list<LISTITEM*> *aux_list = new std::list<LISTITEM*>();
 %}
 
 %union {
@@ -75,12 +72,15 @@
 %token TAN
 %token V_VIEW
 %token X
-%token IDENTIFIER
+%token <str> IDENTIFIER
 %token NEW_LINE
 
 %start Programa
 
-%type<str> ShowOptions Expr Number Value Term Factor BoolOptions MathConstants
+%type<str> ShowOptions Expr Number Value 
+           Term Factor BoolOptions MathConstants
+           AttribIdentifier DimensionsList
+           NumbersList Dimensions AttribMatrix
 
 %%
 
@@ -98,16 +98,17 @@ Statement:
     }
     | IDENTIFIER AttribIdentifier SEMICOLON {}
     | INTEGRATE L_PAREN Number COLON Number COMMA Expr R_PAREN SEMICOLON {}
-    | MATRIX EQUALS AttribMatrix SEMICOLON {}
+    | MATRIX EQUALS AttribMatrix SEMICOLON {
+        std::cout << "'" << $3 << "'" << std::endl;   
+
+        free($3);
+    }
     | PLOT AsFunc SEMICOLON {}
     | QUIT { return 1; }
     | RESET SETTINGS SEMICOLON { settings->resetSettings(); }
     | RPN L_PAREN Expr R_PAREN SEMICOLON {}
     | SET SettingOptions SEMICOLON { optionsManager->applyOptionChanges(settings); }
-    | SHOW ShowOptions SEMICOLON {
-        std::cout << $2;
-        free($2);
-    }
+    | SHOW ShowOptions SEMICOLON { std::cout << $2; free($2); }
     | SOLVE SolveOptions SEMICOLON {}
     | SUM L_PAREN IDENTIFIER COMMA INT COLON INT COMMA Expr R_PAREN SEMICOLON {}
     | Expr {}
@@ -251,21 +252,58 @@ AsFunc:
 ;
 
 AttribMatrix: 
-    L_SQUARE_BRACKET Dimensions DimensionsList R_SQUARE_BRACKET {}
+    L_SQUARE_BRACKET DimensionsList R_SQUARE_BRACKET { $$ = $2; }
 ;
 
 Dimensions: 
-    L_SQUARE_BRACKET Number NumbersList R_SQUARE_BRACKET {}
+    L_SQUARE_BRACKET NumbersList R_SQUARE_BRACKET { $$ = $2; }
 ;
 
-NumbersList: 
-    COMMA Number NumbersList
-    | {}
+NumbersList:
+    Number { $$ = $1; }
+    | MINUS Number { 
+        char *numb = (char *) malloc((sizeof($2) + 1) * sizeof(char));
+
+        sprintf(numb, "-%s", $2);
+
+        free($2);
+
+        $$ = numb;
+    }
+    | NumbersList COMMA Number {
+        char *numbers = (char *) malloc((strlen($1) + strlen($3) + 2) * sizeof(char));
+
+        sprintf(numbers, "%s %s", $1, $3);
+
+        free($1);
+        free($3);
+
+        $$ = numbers;
+    }
+    | NumbersList COMMA MINUS Number {
+        char *numbers = (char *) malloc((strlen($1) + strlen($4) + 3) * sizeof(char));
+
+        sprintf(numbers, "%s -%s", $1, $4);
+
+        free($1);
+        free($4);
+
+        $$ = numbers;
+    }
 ;
 
 DimensionsList: 
-    COMMA Dimensions DimensionsList {}
-    | {}
+    Dimensions {}
+    | DimensionsList COMMA Dimensions {
+        char *dims = (char *) malloc((strlen($1) + strlen($3) + 4) * sizeof(char));
+
+        sprintf(dims, "%s | %s", $1, $3);
+
+        free($1);
+        free($3);
+
+        $$ = dims;
+    }
 ;
 
 Number: 
@@ -301,7 +339,7 @@ SolveOptions:
 ;
 
 AttribIdentifier: 
-    ATTRIB Expr {}
+    ATTRIB Expr { $$ = $2; }
     | ATTRIB AttribMatrix {}
     | {}
 ;
@@ -335,7 +373,7 @@ Term:
 Value:
     Number { $$ = $1; }
     | Function {}
-    | IDENTIFIER {}
+    | IDENTIFIER { $$ = $1; }
     | X {}
     | MINUS Value { 
         char *c = (char *) malloc((strlen($2) + 1) * sizeof(char));

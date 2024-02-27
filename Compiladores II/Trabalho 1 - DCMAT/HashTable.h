@@ -1,9 +1,9 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-#include <map>
+#include "HashItem.h"
 
-typedef struct _hitem htItem;
+#include <map>
 
 class HashTable {
     public:
@@ -11,14 +11,14 @@ class HashTable {
 
         void insert(char *key, char *type, void *value);
 
-        htItem *get(char *key);
+        HashItem *get(char *key);
 
-        char *getHItemType(htItem *item);
+        char *getHItemType(HashItem *item);
 
-        void *getHItemValue(htItem *item);
+        void *getHItemValue(HashItem *item);
     
     private:
-        std::map<char*, htItem*> *hashTable;
+        std::map<char*, HashItem*> *hashTable;
 };
 
 #endif

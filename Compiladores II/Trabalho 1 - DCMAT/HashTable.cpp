@@ -2,29 +2,38 @@
 
 #include <iostream>
 
-struct _hitem {
-    char *type;
-    void *value;
-};
-
 HashTable::HashTable() {
-    this->hashTable = new std::map<char*, htItem*>();
+    this->hashTable = new std::map<char*, HashItem*>();
 }
 
 void HashTable::insert(char *key, char *type, void *value) {
-    htItem *item = (htItem *) malloc(sizeof(htItem));
-    if(!item) {
-        std::cout << "Não foi possível alocar novo item para HashTable" << std::endl;
+    /* Chave já existe */
+    if(this->hashTable->find(key) != this->hashTable->end()) {
+        HashItem *it = get(key);
+
+        it->redefineValues(type, value);
+
         return;
     }
 
-    item->type = type;
-    item->value = value;
+    HashItem *item = new HashItem(type, value);
 
-    this->hashTable->insert(std::pair<char*, htItem*>(key, item));
+    this->hashTable->insert(std::pair<char*, HashItem*>(key, item));
 }
 
-htItem *HashTable::get(char *key) {
-    
+HashItem *HashTable::get(char *key) {
+    std::map<char*, HashItem*>::const_iterator it = this->hashTable->find(key);
+
+    if(it == this->hashTable->end()) return nullptr;
+
+    return it->second;
+}
+
+char *HashTable::getHItemType(HashItem *item) {
+    return item->getType();
+}
+
+void *HashTable::getHItemValue(HashItem *item) {
+    return item->getValue();
 }
 

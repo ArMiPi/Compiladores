@@ -5,11 +5,7 @@
 
 class Matrix {
     public:
-        Matrix(int flt_prc);
-
-        Matrix(int n_lines, int n_cols, float **m, int flt_prc);
-
-        void updateMatrix(int n_lines, int n_cols, float **m);
+        Matrix(char *matrix);
 
         char *asString();
 
@@ -25,10 +21,11 @@ class Matrix {
 
         Matrix mul(float num);
 
+        ~Matrix();
     
     private:
-        int lines, cols, float_precision;
-        float **matrix;
+        int lines, cols;
+        char *matrix;
 
         int *alignment_measures();
 };
