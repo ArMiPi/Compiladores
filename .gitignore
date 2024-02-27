@@ -13,6 +13,7 @@ Listas/
 testes/
 makefile
 !/*/makefile
+!/Compiladores II/Trabalho 1 - DCMAT/Makefile
 *.pdf
 teste.*
 script_teste_lexico/

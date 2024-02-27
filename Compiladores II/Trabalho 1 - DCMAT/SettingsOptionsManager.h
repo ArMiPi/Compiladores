@@ -11,7 +11,7 @@ class SettingsOptionsManager {
 
         void setValues(char **vals);
 
-        void applyOptionChanges(Settings settings);
+        void applyOptionChanges(Settings *settings);
 
     private:
         char *option;

@@ -22,8 +22,8 @@
 "]"                     { return R_SQUARE_BRACKET; }
 ";"                     { return SEMICOLON; }
 ","                     { return COMMA; }
-[0-9]+                  { return INT; }
-[0-9]+"."[0-9]+         { return REAL; }
+[0-9]+                  { yylval.str = strdup(yytext); return INT; }
+[0-9]+"."[0-9]+         { yylval.str = strdup(yytext); return REAL; }
 about                   { return ABOUT; }
 abs                     { return ABS; }
 axis                    { return AXIS; }
@@ -38,8 +38,8 @@ integral_steps          { return INTEGRAL_STEPS; }
 integrate               { return INTEGRATE; }
 linear_system           { return LINEAR_SYSTEM; }
 matrix                  { return MATRIX; }
-off                     { return OFF; }
-on                      { return ON; }
+off                     { yylval.str = strdup(yytext); return OFF; }
+on                      { yylval.str = strdup(yytext); return ON; }
 [pP][iI]                { return PI; }
 plot                    { return PLOT; }
 precision               { return PRECISION; }

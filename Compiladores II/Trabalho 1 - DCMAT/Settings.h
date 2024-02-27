@@ -17,6 +17,7 @@ class Settings {
         */
         void resetSettings();
 
+        /* SETTERS */
         /**
          * Seta os parâmetros de visualização horizontal do eixo X para a geração de 
          * gráficos de funções
@@ -63,6 +64,25 @@ class Settings {
         * Em geral, se utiliza o Algorito de Bresenham para se traçar tais retas.
         */
         void setConnectDots(bool value);
+
+        /* GETTERS */
+        float getHViewLow();
+
+        float getHViewHigh();
+
+        float getVViewLow();
+
+        float getVViewHigh();
+
+        int getFloatPrecision();
+
+        int getIntegralSteps();
+
+        bool getDrawAxis();
+
+        bool getErasePlot();
+
+        bool getConnectDots();
 
     private:
         float h_view_lo;
