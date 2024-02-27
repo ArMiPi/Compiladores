@@ -1,9 +1,15 @@
 %{
+    #include "HashTable.h"
     #include "Settings.h"
     #include "SettingsOptionsManager.h"
 
     #include <iostream>
+    #include <list>
     #include <cstring>
+
+    typedef struct {
+        std::list<char*> value;
+    } LISTITEM;
 
     extern int yylex();
     extern char* yytext;
@@ -12,11 +18,12 @@
 
     Settings *settings = new Settings();
     SettingsOptionsManager *optionsManager = new SettingsOptionsManager();
+
+    std::list<LISTITEM*> *aux_list = new std::list<LISTITEM*>();
 %}
 
 %union {
     char *str;
-    void *set_opt_man;
 }
 
 %token PLUS
@@ -74,7 +81,6 @@
 %start Programa
 
 %type<str> ShowOptions Expr Number Value Term Factor BoolOptions MathConstants
-%type<set_opt_man> SettingOptions
 
 %%
 

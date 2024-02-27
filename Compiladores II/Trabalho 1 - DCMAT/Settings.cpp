@@ -1,4 +1,6 @@
 #include "Settings.h"
+
+#include <iostream>
 #include <cstring>
 
 /* Valores padrão das configurações */
