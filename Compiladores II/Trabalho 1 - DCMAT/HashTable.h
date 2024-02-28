@@ -4,6 +4,7 @@
 #include "HashItem.h"
 
 #include <map>
+#include <string>
 
 class HashTable {
     public:
@@ -18,7 +19,7 @@ class HashTable {
         void *getHItemValue(HashItem *item);
     
     private:
-        std::map<char*, HashItem*> *hashTable;
+        std::map<std::string, HashItem*> *hashTable;
 };
 
 #endif

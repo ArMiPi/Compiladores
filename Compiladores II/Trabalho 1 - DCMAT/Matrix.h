@@ -26,11 +26,10 @@ class Matrix {
     private:
         int lines, cols;
         char ***matrix;
-        int *col_sizes;
 
         char ***createMatrix(char *matrix);
 
-        int *defineColSizes();
+        void formatMatrix(int float_precision);
 };
 
 #endif

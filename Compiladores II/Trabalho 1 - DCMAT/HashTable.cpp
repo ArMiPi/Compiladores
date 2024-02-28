@@ -1,14 +1,15 @@
 #include "HashTable.h"
 
 #include <iostream>
+#include <string>
 
 HashTable::HashTable() {
-    this->hashTable = new std::map<char*, HashItem*>();
+    this->hashTable = new std::map<std::string, HashItem*>();
 }
 
 void HashTable::insert(char *key, char *type, void *value) {
     /* Chave já existe */
-    if(this->hashTable->find(key) != this->hashTable->end()) {
+    if(this->hashTable->find(std::string(key)) != this->hashTable->end()) {
         HashItem *it = get(key);
 
         it->redefineValues(type, value);
@@ -18,11 +19,11 @@ void HashTable::insert(char *key, char *type, void *value) {
 
     HashItem *item = new HashItem(type, value);
 
-    this->hashTable->insert(std::pair<char*, HashItem*>(key, item));
+    this->hashTable->insert(std::pair<std::string, HashItem*>(std::string(key), item));
 }
 
 HashItem *HashTable::get(char *key) {
-    std::map<char*, HashItem*>::const_iterator it = this->hashTable->find(key);
+    std::map<std::string, HashItem*>::const_iterator it = this->hashTable->find(std::string(key));
 
     if(it == this->hashTable->end()) return nullptr;
 

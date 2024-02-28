@@ -101,7 +101,10 @@ Statement:
     | MATRIX EQUALS AttribMatrix SEMICOLON {
         Matrix *matrix =  new Matrix($3);
         
-        std::cout << "'" << $3 << "'" << std::endl;   
+        char *key = (char *) malloc((strlen("matrix") + 1) * sizeof(char));
+        sprintf(key, "matrix");
+
+        hashTable->insert(key, key, matrix);  
 
         free($3);
     }
@@ -118,7 +121,16 @@ Statement:
 
 ShowOptions: 
     SETTINGS { $$ = settings->printSettings(); }
-    | MATRIX {}
+    | MATRIX { 
+        char *key = (char *) malloc((strlen("matrix") + 1) * sizeof(char));
+        sprintf(key, "matrix");
+
+        Matrix *m = (Matrix *) hashTable->getHItemValue(hashTable->get(key));
+
+        free(key);
+
+        $$ = m->asString(settings->getFloatPrecision());
+    }
     | SYMBOLS {}
 ;
 

@@ -15,7 +15,7 @@ Matrix::Matrix(char *matrix) {
     int max = 0, temp_size = 0;
     for(int i = 0; i < lins.size(); i++) {
         temp_size = std::ranges::count(lins[i], ' ');
-        
+
         if(temp_size > max) max = temp_size;
     }
 
@@ -24,11 +24,72 @@ Matrix::Matrix(char *matrix) {
     this->matrix = createMatrix(matrix);
 }
 
+void Matrix::formatMatrix(int float_precision) {
+    std::stringstream str_floats;
+    str_floats.precision(float_precision);
+
+    bool *negatives = (bool *) malloc(this->cols * sizeof(bool));
+    for(int j = 0; j < this->cols; j++) {
+        negatives[j] = false;
+        for(int i = 0; i < this->lines; i++) {
+            if(std::string(this->matrix[i][j]).find("-") != std::string::npos)
+                negatives[j] = true;
+        }
+    }
+
+    float f;
+    for(int j = 0; j < this->cols; j++) {
+        for(int i = 0; i < this->lines; i++) {
+            /* Pegar valor float e formatar corretamente */
+            f = atof(this->matrix[i][j]);
+            str_floats << std::fixed << f;
+
+            /* Salvar valor formatado na matriz */
+            char *c = (char *) malloc((str_floats.str().size() + 2) * sizeof(char));
+            if(negatives[j] && std::string(this->matrix[i][j]).find("-") == std::string::npos) {
+                sprintf(c, " %s", str_floats.str().data());
+            } else {
+                sprintf(c, "%s", str_floats.str().data());
+            }
+
+            free(this->matrix[i][j]);
+            this->matrix[i][j] = c;
+
+            /* Limpar a stringstream */
+            str_floats.str(std::string());
+        }
+    }
+
+    free(negatives);
+}
+
 char *Matrix::asString(int float_precision) {
-    std::string retorno;
+    this->formatMatrix(float_precision);
+
     std::stringstream str_matrix;
+    
+    int size = 0;
+    for(int j = 0; j < this->cols; j++) size += strlen(this->matrix[0][j]);
+    size += this->cols - 1;
 
+    str_matrix << "\n+-";
+    for(int i = 0; i < size; i++) str_matrix << " ";
+    str_matrix << "-+\n";
+    for(int i = 0; i < this->lines; i++) {
+        str_matrix << "| ";
+        for(int j = 0; j < this->cols; j++) {
+            str_matrix << this->matrix[i][j] << " ";
+        }
+        str_matrix << "|\n";
+    }
+    str_matrix << "+-";
+    for(int i = 0; i < size; i++) str_matrix << " ";
+    str_matrix << "-+\n\n";
 
+    char *retorno = (char *) malloc((str_matrix.str().size() + 1) * sizeof(char));
+    sprintf(retorno, "%s", str_matrix.str().data());
+
+    return retorno;
 }
 
 char ***Matrix::createMatrix(char *matrix) {
@@ -69,24 +130,6 @@ char ***Matrix::createMatrix(char *matrix) {
     }
 
     return new_matrix;
-}
-
-int *Matrix::defineColSizes(int float_precision) {
-    int *sizes = (int *) malloc(this->cols * sizeof(int));
-
-    int max;
-    for(int j = 0; j < this->cols; j++) {
-        max = 0;
-        for(int i = 0; i < this->lines; i++) {
-            int val_size = strlen(this->matrix[i][j]);
-
-            if(val_size > max) max = val_size;
-        }
-
-        sizes[j] = max;
-    }
-
-    return sizes;
 }
 
 Matrix::~Matrix() {
