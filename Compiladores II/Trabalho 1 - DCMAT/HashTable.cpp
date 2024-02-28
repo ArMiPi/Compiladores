@@ -1,7 +1,6 @@
 #include "HashTable.h"
 
 #include <iostream>
-#include <string>
 
 HashTable::HashTable() {
     this->hashTable = new std::map<std::string, HashItem*>();
@@ -31,10 +30,12 @@ HashItem *HashTable::get(char *key) {
 }
 
 char *HashTable::getHItemType(HashItem *item) {
+    if(!item) return nullptr;
     return item->getType();
 }
 
 void *HashTable::getHItemValue(HashItem *item) {
+    if(!item) return nullptr;
     return item->getValue();
 }
 

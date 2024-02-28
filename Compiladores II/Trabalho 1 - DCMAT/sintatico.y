@@ -86,6 +86,7 @@
 
 Programa: 
     Statement NEW_LINE { return 0; }
+    | NEW_LINE { return 0; }
 ;
 
 Statement: 
@@ -129,7 +130,15 @@ ShowOptions:
 
         free(key);
 
-        $$ = m->asString(settings->getFloatPrecision());
+        if(!m) {
+            char *err = (char *) malloc((strlen("\nNo Matrix defined!\n\n") + 1) * sizeof(char));
+
+            sprintf(err, "\nNo Matrix defined!\n\n");
+
+            $$ = err;
+        } else {
+            $$ = m->asString(settings->getFloatPrecision());
+        }
     }
     | SYMBOLS {}
 ;
