@@ -25,7 +25,7 @@ class Matrix {
     
     private:
         int lines, cols;
-        char *matrix;
+        char **matrix;
 
         int *alignment_measures();
 };
