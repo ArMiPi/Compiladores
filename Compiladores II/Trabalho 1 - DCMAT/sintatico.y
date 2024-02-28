@@ -77,10 +77,10 @@
 
 %start Programa
 
-%type<str> ShowOptions Expr Number Value 
-           Term Factor BoolOptions MathConstants
-           AttribIdentifier DimensionsList
-           NumbersList Dimensions AttribMatrix
+%type<str>  ShowOptions Expr Number Value 
+            Term Factor BoolOptions MathConstants
+            AttribIdentifier DimensionsList
+            NumbersList Dimensions AttribMatrix
 
 %%
 
@@ -99,6 +99,8 @@ Statement:
     | IDENTIFIER AttribIdentifier SEMICOLON {}
     | INTEGRATE L_PAREN Number COLON Number COMMA Expr R_PAREN SEMICOLON {}
     | MATRIX EQUALS AttribMatrix SEMICOLON {
+        Matrix *matrix =  new Matrix($3);
+        
         std::cout << "'" << $3 << "'" << std::endl;   
 
         free($3);
