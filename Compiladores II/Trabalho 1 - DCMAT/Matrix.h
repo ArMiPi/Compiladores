@@ -7,11 +7,11 @@ class Matrix {
     public:
         Matrix(char *matrix);
 
-        char *asString();
+        char *asString(int float_precision);
 
         float determinant();
 
-        char *linear_system();
+        char *linearSystem();
 
         Matrix add(Matrix m2);
 
@@ -26,8 +26,11 @@ class Matrix {
     private:
         int lines, cols;
         char ***matrix;
+        int *col_sizes;
 
-        char ***create_matrix(char *matrix);
+        char ***createMatrix(char *matrix);
+
+        int *defineColSizes();
 };
 
 #endif

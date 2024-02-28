@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <sstream>
+#include <cstring>
 
 Matrix::Matrix(char *matrix) {
     std::string str = std::string(matrix);
@@ -17,12 +19,19 @@ Matrix::Matrix(char *matrix) {
         if(temp_size > max) max = temp_size;
     }
 
-    this->lines = lins.size() + 1;
+    this->lines = lins.size();
     this->cols = max + 1;
-    this->matrix = create_matrix(matrix);
+    this->matrix = createMatrix(matrix);
 }
 
-char ***Matrix::create_matrix(char *matrix) {
+char *Matrix::asString(int float_precision) {
+    std::string retorno;
+    std::stringstream str_matrix;
+
+
+}
+
+char ***Matrix::createMatrix(char *matrix) {
     char ***new_matrix = (char ***) malloc(this->lines * sizeof(char **));
 
     /* Alocando a matriz */
@@ -30,51 +39,64 @@ char ***Matrix::create_matrix(char *matrix) {
         new_matrix[i] = (char **) malloc(this->cols * sizeof(char *));
 
         for(int j = 0; j < this->cols; j++) {
-            new_matrix[i][i] = nullptr;
+            new_matrix[i][j] = nullptr;
         }
     }
 
-    /* Preenchendo a matriz */
-    size_t start = 0, end;
-    int i = 0, j = 0;
-    std::string temp_matrix = std::string(matrix);
-    std::string moc = "0.0";
-    std::string temp;
-    std::string splitter = " ";
-    while((end = temp_matrix.find(splitter, start)) != std::string::npos) {
-        temp = temp_matrix.substr(start, end - start);
+    std::vector<std::string> mtx = split(matrix, " | ");
+    std::vector<std::string> temp;
+    std::string default_value = "0.0";
+    for(int i = 0; i < this->lines; i++) {
+        temp = split(mtx[i], " ");
+        int j;
+        for(j = 0; j < temp.size(); j++) {
+            char *c = (char *) malloc((temp.size() + 1) * sizeof(char));
 
-        if(temp.compare("|") == 0) {
-            while(j < this->cols) {
-                char *val = (char *) malloc((moc.size() + 1) * sizeof(char));
-                sprintf(val, "%s", moc);
+            sprintf(c, "%s", temp[j].data());
 
-                new_matrix[i][j] = val;
+            new_matrix[i][j] = c;
+        }
 
-                j++;
-            }
+        while(j < this->cols) {
+            char *c = (char *) malloc((default_value.size() + 1) * sizeof(char));
 
-            i++;
-        } else {
-            char *val = (char *) malloc((temp.size() + 1) * sizeof(char));
-            sprintf(val, "%s", temp);
+            sprintf(c, "%s" , default_value.data());
 
-            new_matrix[i][j] = val;
+            new_matrix[i][j] = c;
 
             j++;
         }
-        start = end + splitter.size();
     }
-
-    temp = temp_matrix.substr(start);
-    char *val = (char *) malloc((temp.size() + 1) * sizeof(char));
-    sprintf(val, "%s", temp);
-
-    new_matrix[this->lines -1][this->cols - 1] = val;
 
     return new_matrix;
 }
 
-Matrix::~Matrix() {
+int *Matrix::defineColSizes(int float_precision) {
+    int *sizes = (int *) malloc(this->cols * sizeof(int));
 
+    int max;
+    for(int j = 0; j < this->cols; j++) {
+        max = 0;
+        for(int i = 0; i < this->lines; i++) {
+            int val_size = strlen(this->matrix[i][j]);
+
+            if(val_size > max) max = val_size;
+        }
+
+        sizes[j] = max;
+    }
+
+    return sizes;
+}
+
+Matrix::~Matrix() {
+    for(int i = 0; i < this->lines; i++) {
+        for(int j = 0; j < this->cols; j++) {
+            free(this->matrix[i][j]);
+        }
+
+        free(this->matrix[i]);
+    }
+
+    free(this->matrix);
 }
