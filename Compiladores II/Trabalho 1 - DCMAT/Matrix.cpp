@@ -132,6 +132,73 @@ char ***Matrix::createMatrix(char *matrix) {
     return new_matrix;
 }
 
+float calc2x2determinant(char ***matrix, std::vector<int> validLins, std::vector<int> validCols) {
+    /**
+     * | a b | = (a*d) - (b*c)
+     * | c d |
+    */
+    float a = atof(matrix[validLins[0]][validCols[0]]);
+    float b = atof(matrix[validLins[0]][validCols[1]]);
+    float c = atof(matrix[validLins[1]][validCols[0]]);
+    float d = atof(matrix[validLins[1]][validCols[1]]);
+
+    return (a*d) - (b*c);
+}
+
+float calc_determinant(char ***matrix, int size, std::vector<int> validLins, std::vector<int> validCols) {
+    if(size == 1) {
+        return atof(matrix[validLins[0]][validCols[0]]);
+    } else if(size == 2) {
+        return calc2x2determinant(matrix, validLins, validCols);
+    }
+
+    int lin = validLins[0];
+    int col;
+    validLins.erase(std::remove(validLins.begin(), validLins.end(), lin), validLins.end());
+    std::vector<int> cs;
+    float det = 0;
+    for(int i = 0; i < validCols.size(); i++) {
+        cs = validCols;
+        col = cs[i];
+
+        cs.erase(std::remove(cs.begin(), cs.end(), col), cs.end());
+
+        if(i % 2 == 0) {
+            det += calc_determinant(matrix, size - 1, validLins, cs);
+        } else {
+            det -= calc_determinant(matrix, size - 1, validLins, cs);
+        }
+    }
+
+    return det;
+}
+
+char *Matrix::determinant(int float_precision) {
+    if(this->lines != this->cols) {
+        char *c = (char *) malloc((strlen("0.0") + 1) * sizeof(char));
+        sprintf(c, "0.0");
+        return c;
+    }
+    
+    std::vector<int> validLins, validCols;
+    for(int i = 0; i < this->cols; i++) {
+        validLins.push_back(i);
+        validCols.push_back(i);
+    }
+
+
+    float det = calc_determinant(this->matrix, this->cols, validLins, validCols);
+
+    std::stringstream ss;
+    ss.precision(float_precision);
+    ss << std::fixed << det;
+
+    char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+    sprintf(c, "%s", ss.str().data());
+
+    return c;
+}
+
 Matrix::~Matrix() {
     for(int i = 0; i < this->lines; i++) {
         for(int j = 0; j < this->cols; j++) {

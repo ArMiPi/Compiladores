@@ -9,7 +9,7 @@ class Matrix {
 
         char *asString(int float_precision);
 
-        float determinant();
+        char *determinant(int float_precision);
 
         char *linearSystem();
 

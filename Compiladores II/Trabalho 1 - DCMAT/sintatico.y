@@ -81,6 +81,7 @@
             Term Factor BoolOptions MathConstants
             AttribIdentifier DimensionsList
             NumbersList Dimensions AttribMatrix
+            SolveOptions
 
 %%
 
@@ -115,7 +116,7 @@ Statement:
     | RPN L_PAREN Expr R_PAREN SEMICOLON {}
     | SET SettingOptions SEMICOLON { optionsManager->applyOptionChanges(settings); }
     | SHOW ShowOptions SEMICOLON { std::cout << $2; free($2); }
-    | SOLVE SolveOptions SEMICOLON {}
+    | SOLVE SolveOptions SEMICOLON { std::cout << std::endl << $2 << std::endl << std::endl; free($2); }
     | SUM L_PAREN IDENTIFIER COMMA INT COLON INT COMMA Expr R_PAREN SEMICOLON {}
     | Expr {}
 ;
@@ -357,7 +358,16 @@ MathConstants:
 ;
 
 SolveOptions: 
-    DETERMINANT {}
+    DETERMINANT {
+        char *key = (char *) malloc((strlen("matrix") + 1) * sizeof(char));
+        sprintf(key, "matrix");
+
+        Matrix *m = (Matrix *) hashTable->getHItemValue(hashTable->get(key));
+
+        free(key);
+
+        $$ = m->determinant(settings->getFloatPrecision());
+    }
     | LINEAR_SYSTEM {}
 ;
 
