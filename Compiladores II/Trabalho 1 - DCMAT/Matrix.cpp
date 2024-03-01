@@ -301,9 +301,34 @@ Matrix *Matrix::sub(Matrix *m2) {
 }
 
 Matrix *Matrix::mul(Matrix *m2) {
-    if(this->lines != m2->lines || this->cols != m2->cols) {
+    if(this->cols != m2->lines) {
         return nullptr;
     }
+
+    Matrix *mulM = new Matrix(this->lines, m2->cols);
+
+    float elem;
+    std::stringstream ss;
+    for(int i = 0; i < mulM->lines; i++) {
+        for(int j = 0; j < mulM->cols; j++) {
+            elem = 0.0;
+            for(int k = 0; k < this->cols; k++) {
+                elem += atof(this->matrix[i][k]) * atof(this->matrix[k][j]);
+            }
+
+            ss << elem;
+
+            char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+            sprintf(c, "%s", ss.str().data());
+
+            free(mulM->matrix[i][j]);
+            mulM->matrix[i][j] = c;
+
+            ss.str(std::string());
+        }
+    }
+
+    return mulM;
 }
 
 Matrix *Matrix::mul(float num) {

@@ -81,7 +81,7 @@
             Term Factor BoolOptions MathConstants
             AttribIdentifier DimensionsList
             NumbersList Dimensions AttribMatrix
-            SolveOptions
+            SolveOptions Function
 
 %%
 
@@ -378,10 +378,46 @@ AttribIdentifier:
 ;
 
 Function: 
-    ABS L_PAREN Expr R_PAREN {}
-    | COS L_PAREN Expr R_PAREN {}
-    | SIN L_PAREN Expr R_PAREN {}
-    | TAN L_PAREN Expr R_PAREN {}
+    ABS L_PAREN Expr R_PAREN {
+        char func[] = "abs";
+        char *c = (char *) malloc((sizeof($3) + strlen(func) + 2) * sizeof(char));
+
+        sprintf(c, "%s %s", $3, func);
+
+        free($3);
+
+        $$ = c;
+    }
+    | COS L_PAREN Expr R_PAREN {
+        char func[] = "cos";
+        char *c = (char *) malloc((sizeof($3) + strlen(func) + 2) * sizeof(char));
+
+        sprintf(c, "%s %s", $3, func);
+
+        free($3);
+
+        $$ = c;
+    }
+    | SIN L_PAREN Expr R_PAREN {
+        char func[] = "sin";
+        char *c = (char *) malloc((sizeof($3) + strlen(func) + 2) * sizeof(char));
+
+        sprintf(c, "%s %s", $3, func);
+
+        free($3);
+
+        $$ = c;
+    }
+    | TAN L_PAREN Expr R_PAREN {
+        char func[] = "tan";
+        char *c = (char *) malloc((sizeof($3) + strlen(func) + 2) * sizeof(char));
+
+        sprintf(c, "%s %s", $3, func);
+
+        free($3);
+
+        $$ = c;
+    }
 ;
 
 Expr: 
@@ -395,12 +431,12 @@ Factor:
     Term { $$ = $1; }
     | Factor MUL Term {}
     | Factor DIV Term {}
+    | Factor MOD Term {}
 ;
 
 Term:
     Value { $$ = $1; }
     | Term EXP Value {}
-    | Term MOD Value {}
 ;
 
 Value:
