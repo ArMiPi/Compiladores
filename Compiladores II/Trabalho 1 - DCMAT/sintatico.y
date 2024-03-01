@@ -116,7 +116,7 @@ Statement:
     | RPN L_PAREN Expr R_PAREN SEMICOLON {}
     | SET SettingOptions SEMICOLON { optionsManager->applyOptionChanges(settings); }
     | SHOW ShowOptions SEMICOLON { std::cout << $2; free($2); }
-    | SOLVE SolveOptions SEMICOLON { std::cout << std::endl << $2 << std::endl << std::endl; free($2); }
+    | SOLVE SolveOptions SEMICOLON { std::cout << std::endl << $2; free($2); }
     | SUM L_PAREN IDENTIFIER COMMA INT COLON INT COMMA Expr R_PAREN SEMICOLON {}
     | Expr {}
 ;

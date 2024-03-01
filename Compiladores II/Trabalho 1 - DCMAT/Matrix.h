@@ -7,19 +7,21 @@ class Matrix {
     public:
         Matrix(char *matrix);
 
+        Matrix(int linhas, int colunas);
+
         char *asString(int float_precision);
 
         char *determinant(int float_precision);
 
         char *linearSystem();
 
-        Matrix add(Matrix m2);
+        Matrix *add(Matrix *m2);
 
-        Matrix sub(Matrix m2);
+        Matrix *sub(Matrix *m2);
 
-        Matrix mul(Matrix m2);
+        Matrix *mul(Matrix *m2);
 
-        Matrix mul(float num);
+        Matrix *mul(float num);
 
         ~Matrix();
     

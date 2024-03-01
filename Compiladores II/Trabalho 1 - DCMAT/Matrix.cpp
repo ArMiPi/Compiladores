@@ -24,6 +24,17 @@ Matrix::Matrix(char *matrix) {
     this->matrix = createMatrix(matrix);
 }
 
+Matrix::Matrix(int linhas, int colunas) {
+    this->lines = linhas;
+    this->cols = colunas;
+
+    std::stringstream ss;
+    for(int i = 0; i < linhas; i++) ss << " | ";
+
+    char *empty = ss.str().data();
+    this->matrix = createMatrix(empty);
+}
+
 void Matrix::formatMatrix(int float_precision) {
     std::stringstream str_floats;
     str_floats.precision(float_precision);
@@ -37,6 +48,7 @@ void Matrix::formatMatrix(int float_precision) {
         }
     }
 
+    /* Ajustar os floats em strings com as casas decimais corretas */
     float f;
     for(int j = 0; j < this->cols; j++) {
         for(int i = 0; i < this->lines; i++) {
@@ -59,8 +71,39 @@ void Matrix::formatMatrix(int float_precision) {
             str_floats.str(std::string());
         }
     }
-
     free(negatives);
+
+    /* Fazer com que todos tenham o mesmo tamanho com base na coluna */
+    int largest, curr_size, controller;
+    for(int j = 0; j < this->cols; j++) {
+        largest = 0;
+        for(int i = 0; i < this->lines; i++) {
+            curr_size = strlen(this->matrix[i][j]);
+            if(curr_size > largest) largest = curr_size;
+        }
+
+        /* Resize dos floats da coluna */
+        for(int i = 0; i < this->lines; i++) {
+            curr_size = strlen(this->matrix[i][j]);
+
+            if(curr_size == largest) continue;
+
+            controller = largest - curr_size;
+            while(controller) {
+                str_floats << " ";
+                controller--;
+            }
+            str_floats << matrix[i][j];
+
+            char *c = (char *) malloc((str_floats.str().size() + 1) * sizeof(char));
+            sprintf(c, "%s", str_floats.str().data());
+
+            free(this->matrix[i][j]);
+            this->matrix[i][j] = c;
+
+            str_floats.str(std::string());
+        }
+    }
 }
 
 char *Matrix::asString(int float_precision) {
@@ -164,9 +207,9 @@ float calc_determinant(char ***matrix, int size, std::vector<int> validLins, std
         cs.erase(std::remove(cs.begin(), cs.end(), col), cs.end());
 
         if(i % 2 == 0) {
-            det += calc_determinant(matrix, size - 1, validLins, cs);
+            det += atof(matrix[lin][col]) * calc_determinant(matrix, size - 1, validLins, cs);
         } else {
-            det -= calc_determinant(matrix, size - 1, validLins, cs);
+            det -= atof(matrix[lin][col]) * calc_determinant(matrix, size - 1, validLins, cs);
         }
     }
 
@@ -193,10 +236,96 @@ char *Matrix::determinant(int float_precision) {
     ss.precision(float_precision);
     ss << std::fixed << det;
 
-    char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
-    sprintf(c, "%s", ss.str().data());
+    char *c = (char *) malloc((ss.str().size() + 3) * sizeof(char));
+    sprintf(c, "%s\n\n", ss.str().data());
 
     return c;
+}
+
+char *Matrix::linearSystem() {
+
+}
+
+Matrix *Matrix::add(Matrix *m2) {
+    if(this->lines != m2->lines || this->cols != m2->cols) {
+        return nullptr;
+    }
+
+    Matrix *addM = new Matrix(this->lines, this->cols);
+
+    float res;
+    std::stringstream ss;
+    for(int i = 0; i < this->lines; i++) {
+        for(int j = 0; j < this->cols; j++) {
+            res = atof(this->matrix[i][j]) + atof(m2->matrix[i][j]);
+            ss << res;
+
+            char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+            sprintf(c, "%s", ss.str().data());
+
+            free(addM->matrix[i][j]);
+            addM->matrix[i][j] = c;
+
+            ss.str(std::string());
+        }
+    }
+
+    return addM;
+}
+
+Matrix *Matrix::sub(Matrix *m2) {
+    if(this->lines != m2->lines || this->cols != m2->cols) {
+        return nullptr;
+    }
+
+    Matrix *subM = new Matrix(this->lines, this->cols);
+
+    float res;
+    std::stringstream ss;
+    for(int i = 0; i < this->lines; i++) {
+        for(int j = 0; j < this->cols; j++) {
+            res = atof(this->matrix[i][j]) - atof(m2->matrix[i][j]);
+            ss << res;
+
+            char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+            sprintf(c, "%s", ss.str().data());
+
+            free(subM->matrix[i][j]);
+            subM->matrix[i][j] = c;
+
+            ss.str(std::string());
+        }
+    }
+
+    return subM;
+}
+
+Matrix *Matrix::mul(Matrix *m2) {
+    if(this->lines != m2->lines || this->cols != m2->cols) {
+        return nullptr;
+    }
+}
+
+Matrix *Matrix::mul(float num) {
+    Matrix *m_return = new Matrix(this->lines, this->cols);
+    std::stringstream ss;
+    float f;
+    for(int i = 0; i < this->lines; i++) {
+        for(int j = 0; j < this->cols; j++) {
+            f = atof(this->matrix[i][j]) * num;
+            ss << f;
+
+            char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+            sprintf(c, "%s", ss.str().data());
+
+            free(m_return->matrix[i][j]);
+            m_return->matrix[i][j] = c;
+
+            ss.str(std::string());
+        }
+    }
+
+    return m_return;
 }
 
 Matrix::~Matrix() {
