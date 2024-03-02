@@ -5,6 +5,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 class HashTable {
     public:
@@ -17,6 +18,8 @@ class HashTable {
         char *getHItemType(HashItem *item);
 
         void *getHItemValue(HashItem *item);
+
+        std::vector<std::string> getKeys();
     
     private:
         std::map<std::string, HashItem*> *hashTable;

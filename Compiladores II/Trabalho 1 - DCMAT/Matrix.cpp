@@ -35,6 +35,14 @@ Matrix::Matrix(int linhas, int colunas) {
     this->matrix = createMatrix(empty);
 }
 
+int Matrix::getNLines() {
+    return this->lines;
+}
+
+int Matrix::getNCols() {
+    return this->cols;
+}
+
 void Matrix::formatMatrix(int float_precision) {
     std::stringstream str_floats;
     str_floats.precision(float_precision);

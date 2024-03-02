@@ -9,6 +9,10 @@ class Matrix {
 
         Matrix(int linhas, int colunas);
 
+        int getNLines();
+
+        int getNCols();
+
         char *asString(int float_precision);
 
         char *determinant(int float_precision);

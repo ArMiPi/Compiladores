@@ -55,7 +55,7 @@ sum                     { return SUM; }
 symbols                 { return SYMBOLS; }
 tan                     { return TAN; }
 v_view                  { return V_VIEW; }
-[xX]                    { return X; }
+[xX]                    { yylval.str = strdup(yytext); return X; }
 [a-zA-Z]+[_0-9a-zA-Z]*  { yylval.str = strdup(yytext); return IDENTIFIER; }
 " "                     { }
 "\n"                    { return NEW_LINE; }

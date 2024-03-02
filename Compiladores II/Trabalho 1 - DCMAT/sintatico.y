@@ -3,10 +3,14 @@
     #include "Matrix.h"
     #include "Settings.h"
     #include "SettingsOptionsManager.h"
+    #include "StringUtils.h"
+    #include "Math.h"
 
     #include <iostream>
-    #include <list>
     #include <cstring>
+    #include <sstream>
+    #include <vector>
+    #include <string>
 
     extern int yylex();
     extern char* yytext;
@@ -71,7 +75,7 @@
 %token SYMBOLS
 %token TAN
 %token V_VIEW
-%token X
+%token <str> X
 %token <str> IDENTIFIER
 %token NEW_LINE
 
@@ -98,7 +102,66 @@ Statement:
         std::cout << "\n|                                              |";
         std::cout << "\n+----------------------------------------------+\n\n";
     }
-    | IDENTIFIER AttribIdentifier SEMICOLON {}
+    | IDENTIFIER AttribIdentifier SEMICOLON {
+        if(!$2) {
+            /* Obter identificador da hashTable */
+            HashItem *it = hashTable->get($1);
+
+            if(!it) {
+                std::cout << std::endl;
+                std::cout << "Undefined symbol" << std::endl;
+                std::cout << std::endl;
+            } else {
+                if(std::string(hashTable->getHItemType(it)).compare("matrix") == 0) {
+                    Matrix *m = (Matrix *) hashTable->getHItemValue(it);
+                    char *mat = m->asString(settings->getFloatPrecision());
+
+                    std::cout << mat;
+
+                    free(mat);
+                } else {
+                    char *value = (char *) hashTable->getHItemValue(it);
+
+                    std::cout << std::endl;
+                    std::cout << $1 << " = " << value << std::endl;
+                    std::cout << std::endl;
+                }
+            }
+            free($1);
+        } else {
+            std::string str($2);
+            std::vector<std::string> input = split(str, "->");
+
+            if(input[0].compare("FLOAT") == 0) {
+                std::string tp = "float";
+                char *type = (char *) malloc((tp.size() + 1) * sizeof(char));
+                sprintf(type, "%s", tp.data());
+
+                char *value = solveRpn(input[1].data(), hashTable, settings->getFloatPrecision());
+
+                hashTable->insert($1, type, value);
+
+                std::cout << std::endl;
+                std::cout << value << std::endl;
+                std::cout << std::endl;
+            } else {
+                Matrix *m = new Matrix(input[1].data());
+                std::string tp = "matrix";
+                char *type = (char *) malloc((tp.size() + 1) * sizeof(char));
+                sprintf(type, "%s", tp.data());
+
+                hashTable->insert($1, type, m);
+
+                char *mstr = m->asString(settings->getFloatPrecision());
+
+                std::cout << mstr;
+
+                free(mstr);
+            }
+
+            free($2);
+        }
+    }
     | INTEGRATE L_PAREN Number COLON Number COMMA Expr R_PAREN SEMICOLON {}
     | MATRIX EQUALS AttribMatrix SEMICOLON {
         Matrix *matrix =  new Matrix($3);
@@ -113,12 +176,27 @@ Statement:
     | PLOT AsFunc SEMICOLON {}
     | QUIT { return 1; }
     | RESET SETTINGS SEMICOLON { settings->resetSettings(); }
-    | RPN L_PAREN Expr R_PAREN SEMICOLON {}
+    | RPN L_PAREN Expr R_PAREN SEMICOLON { 
+        std::cout << std::endl;
+        std::cout << $3 << std::endl;
+        std::cout << std::endl;
+
+        free($3);
+    }
     | SET SettingOptions SEMICOLON { optionsManager->applyOptionChanges(settings); }
     | SHOW ShowOptions SEMICOLON { std::cout << $2; free($2); }
     | SOLVE SolveOptions SEMICOLON { std::cout << std::endl << $2; free($2); }
     | SUM L_PAREN IDENTIFIER COMMA INT COLON INT COMMA Expr R_PAREN SEMICOLON {}
-    | Expr {}
+    | Expr {
+        char *value = solveRpn($1, hashTable, settings->getFloatPrecision());
+
+        std::cout << std::endl;
+        std::cout << value << std::endl;
+        std::cout << std::endl;
+
+        free(value);
+        free($1);
+    }
 ;
 
 ShowOptions: 
@@ -141,7 +219,34 @@ ShowOptions:
             $$ = m->asString(settings->getFloatPrecision());
         }
     }
-    | SYMBOLS {}
+    | SYMBOLS {
+        std::stringstream ss;
+        
+        ss << std::endl;
+
+        std::vector<std::string> keys = hashTable->getKeys();
+
+        char *type;
+        HashItem *it;
+        for(int i = 0; i < keys.size(); i++) {
+            it = hashTable->get(keys[i].data());
+
+            if(std::string(hashTable->getHItemType(it)).compare("matrix") == 0) {
+                Matrix *m = (Matrix *) hashTable->getHItemValue(it);
+
+                ss << keys[i] << " - MATRIX [" << m->getNLines() << "] [" << m->getNCols() << "]" << std::endl;
+            } else {
+                ss << keys[i] << " - FLOAT" << std::endl;
+            }
+        }
+
+        ss << std::endl;
+
+        char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+        sprintf(c, "%s", ss.str().data());
+
+        $$ = c;
+    }
 ;
 
 SettingOptions: 
@@ -331,29 +436,61 @@ DimensionsList:
 ;
 
 Number: 
-    INT { $$ = $1; }
-    | REAL { $$ = $1; }
-    | MathConstants { $$ = $1; }
+    INT { 
+        std::stringstream ss;
+        ss.precision(settings->getFloatPrecision());
+
+        ss << std::fixed << atof($1);
+
+        char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+        sprintf(c, "%s", ss.str().data());
+
+        free($1);
+
+        $$ = c; 
+    }
+    | REAL { 
+        std::stringstream ss;
+        ss.precision(settings->getFloatPrecision());
+
+        ss << std::fixed << atof($1);
+
+        char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+        sprintf(c, "%s", ss.str().data());
+
+        free($1);
+
+        $$ = c; 
+    }
+    | MathConstants { 
+        $$ = $1; 
+    }
 ;
 
 MathConstants: 
     PI { 
-        char temp[] = "3.14159265";
+        std::stringstream ss;
+        ss.precision(settings->getFloatPrecision());
 
-        char *pi = (char *) malloc((strlen(temp) + 1) * sizeof(char));
+        ss << std::fixed << 3.14159265;
 
-        sprintf(pi, "%s", temp);
+        char *pi = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+
+        sprintf(pi, "%s", ss.str().data());
 
         $$ = pi; 
     }
     | EULER { 
-        char temp[] = "2.71828182";
+        std::stringstream ss;
+        ss.precision(settings->getFloatPrecision());
 
-        char *euler = (char *) malloc((strlen(temp) + 1) * sizeof(char));
+        ss << std::fixed << 2.71828182;
 
-        sprintf(euler, "%s", temp);
+        char *euler = (char *) malloc((ss.str().size() + 1) * sizeof(char));
 
-        $$ = euler;
+        sprintf(euler, "%s", ss.str().data());
+
+        $$ = euler; 
     }
 ;
 
@@ -372,14 +509,36 @@ SolveOptions:
 ;
 
 AttribIdentifier: 
-    ATTRIB Expr { $$ = $2; }
-    | ATTRIB AttribMatrix {}
-    | {}
+    ATTRIB Expr { 
+        std::stringstream ss;
+
+        ss << "FLOAT->" << $2;
+
+        char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+        sprintf(c, "%s", ss.str().data());
+
+        free($2);
+
+        $$ = c; 
+    }
+    | ATTRIB AttribMatrix { 
+        std::stringstream ss;
+
+        ss << "MATRIX->" << $2;
+
+        char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+        sprintf(c, "%s", ss.str().data());
+
+        free($2);
+
+        $$ = c; 
+    }
+    | { $$ = nullptr; }
 ;
 
 Function: 
     ABS L_PAREN Expr R_PAREN {
-        char func[] = "abs";
+        char func[] = "ABS";
         char *c = (char *) malloc((sizeof($3) + strlen(func) + 2) * sizeof(char));
 
         sprintf(c, "%s %s", $3, func);
@@ -389,7 +548,7 @@ Function:
         $$ = c;
     }
     | COS L_PAREN Expr R_PAREN {
-        char func[] = "cos";
+        char func[] = "COS";
         char *c = (char *) malloc((sizeof($3) + strlen(func) + 2) * sizeof(char));
 
         sprintf(c, "%s %s", $3, func);
@@ -399,7 +558,7 @@ Function:
         $$ = c;
     }
     | SIN L_PAREN Expr R_PAREN {
-        char func[] = "sin";
+        char func[] = "SEN";
         char *c = (char *) malloc((sizeof($3) + strlen(func) + 2) * sizeof(char));
 
         sprintf(c, "%s %s", $3, func);
@@ -409,7 +568,7 @@ Function:
         $$ = c;
     }
     | TAN L_PAREN Expr R_PAREN {
-        char func[] = "tan";
+        char func[] = "TAN";
         char *c = (char *) malloc((sizeof($3) + strlen(func) + 2) * sizeof(char));
 
         sprintf(c, "%s %s", $3, func);
@@ -422,28 +581,75 @@ Function:
 
 Expr: 
     Factor { $$ = $1; }
-    | Expr PLUS Factor {}
-    | Expr MINUS Factor {}
-    | L_PAREN Expr R_PAREN {}
+    | Expr PLUS Factor {
+        char *c = (char *) malloc((strlen($1) + strlen($3) + 4) * sizeof(char));
+        sprintf(c, "%s %s +", $1, $3);
+
+        free($1);
+        free($3);
+
+        $$ = c;
+    }
+    | Expr MINUS Factor {
+        char *c = (char *) malloc((strlen($1) + strlen($3) + 4) * sizeof(char));
+        sprintf(c, "%s %s -", $1, $3);
+
+        free($1);
+        free($3);
+
+        $$ = c;
+    }
 ;
 
 Factor:
     Term { $$ = $1; }
-    | Factor MUL Term {}
-    | Factor DIV Term {}
-    | Factor MOD Term {}
+    | Factor MUL Term {
+        char *c = (char *) malloc((strlen($1) + strlen($3) + 4) * sizeof(char));
+        sprintf(c, "%s %s *", $1, $3);
+
+        free($1);
+        free($3);
+
+        $$ = c;
+    }
+    | Factor DIV Term {
+        char *c = (char *) malloc((strlen($1) + strlen($3) + 4) * sizeof(char));
+        sprintf(c, "%s %s /", $1, $3);
+
+        free($1);
+        free($3);
+
+        $$ = c;
+    }
+    | Factor MOD Term {
+        char *c = (char *) malloc((strlen($1) + strlen($3) + 4) * sizeof(char));
+        sprintf(c, "%s %s %%", $1, $3);
+
+        free($1);
+        free($3);
+
+        $$ = c;
+    }
 ;
 
 Term:
     Value { $$ = $1; }
-    | Term EXP Value {}
+    | Term EXP Value {
+        char *c = (char *) malloc((strlen($1) + strlen($3) + 4) * sizeof(char));
+        sprintf(c, "%s %s ^", $1, $3);
+
+        free($1);
+        free($3);
+
+        $$ = c;
+    }
 ;
 
 Value:
     Number { $$ = $1; }
-    | Function {}
+    | Function { $$ = $1; }
     | IDENTIFIER { $$ = $1; }
-    | X {}
+    | X { $$ = $1; }
     | MINUS Value { 
         char *c = (char *) malloc((strlen($2) + 1) * sizeof(char));
 
@@ -454,6 +660,7 @@ Value:
         $$ = c;
     }
     | PLUS Value { $$ = $2; }
+    | L_PAREN Expr R_PAREN { $$ = $2; }
 ;
 
 %%
