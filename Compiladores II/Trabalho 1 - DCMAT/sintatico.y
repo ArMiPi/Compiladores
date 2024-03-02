@@ -178,6 +178,8 @@ Statement:
     | RESET SETTINGS SEMICOLON { settings->resetSettings(); }
     | RPN L_PAREN Expr R_PAREN SEMICOLON { 
         std::cout << std::endl;
+        std::cout << "Expression in RPN format:" << std::endl;
+        std::cout << std::endl;
         std::cout << $3 << std::endl;
         std::cout << std::endl;
 

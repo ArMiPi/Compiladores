@@ -43,8 +43,9 @@ std::vector<std::string> HashTable::getKeys() {
     std::vector<std::string> keys;
 
     for(auto const& [key, val] : *(this->hashTable)) {
-        if(key.compare("matrix") == 0) continue;
-        keys.push_back(key);
+        if(key.compare("matrix") != 0) {
+            keys.push_back(key);
+        }
     }
 
     return keys;
