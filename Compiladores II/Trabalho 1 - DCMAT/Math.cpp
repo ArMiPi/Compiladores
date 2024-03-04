@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstring>
 #include <stack>
+#include <algorithm>
 
 bool isFloat(std::string str) {
     std::istringstream iss(str);
@@ -119,6 +120,43 @@ char *solveRpn(char *rpn, HashTable *hashTable, int float_precision) {
     std::stringstream ss;
     ss.precision(float_precision);
     ss << std::fixed << res;
+
+    char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+    sprintf(c, "%s", ss.str().data());
+
+    return c;
+}
+
+char *solveSum(char *variavel, char *inf_lim, char *sup_lim, char *rpn, HashTable *hashTable, int float_precision) {
+    int inferior = atoi(inf_lim);
+    int superior = atoi(sup_lim);
+
+    std::stringstream expr;
+    expr << " " << rpn << " ";
+
+    std::stringstream var;
+    var << " " << variavel << " ";
+
+    std::stringstream varValue;
+    float result = 0.0;
+    char *rpnValue;
+    for(int i = inferior; i <= superior; i++) {
+        varValue << " " << i << " ";
+
+        std::replace(expr.str().begin(), expr.str().end(), var.str(), varValue.str());
+
+        rpnValue = solveRpn(expr.str().data(), hashTable, float_precision);
+        result += atof(rpnValue);
+
+        varValue.str(std::string());
+        expr.str(std::string());
+        expr << " " << rpn << " ";
+        free(rpnValue);
+    }
+
+    std::stringstream ss;
+    ss.precision(float_precision);
+    ss << std::fixed << result;
 
     char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
     sprintf(c, "%s", ss.str().data());

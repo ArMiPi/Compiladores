@@ -7,6 +7,8 @@ bool isFloat(std::string str);
 
 char *solveRpn(char *rpn, HashTable *hashTable, int float_precision);
 
+char *solveSum(char *variavel, char *inf_lim, char *sup_lim, char *rpn, HashTable *hashTable, int float_precision);
+
 char *abs(std::string valor);
 
 char *sen(std::string valor);

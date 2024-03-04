@@ -188,7 +188,19 @@ Statement:
     | SET SettingOptions SEMICOLON { optionsManager->applyOptionChanges(settings); }
     | SHOW ShowOptions SEMICOLON { std::cout << $2; free($2); }
     | SOLVE SolveOptions SEMICOLON { std::cout << std::endl << $2; free($2); }
-    | SUM L_PAREN IDENTIFIER COMMA INT COLON INT COMMA Expr R_PAREN SEMICOLON {}
+    | SUM L_PAREN IDENTIFIER COMMA INT COLON INT COMMA Expr R_PAREN SEMICOLON {
+        char *result = solveSum($3, $5, $7, $9, hashTable, settings->getFloatPrecision());
+
+        std::cout << std::endl;
+        std::cout << result << std::endl;
+        std::cout << std::endl;
+
+        free($3);
+        free($5);
+        free($7);
+        free($9);
+        free(result);
+    }
     | Expr {
         char *value = solveRpn($1, hashTable, settings->getFloatPrecision());
 
