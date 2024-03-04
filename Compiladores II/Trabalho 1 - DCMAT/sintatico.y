@@ -85,7 +85,7 @@
             Term Factor BoolOptions MathConstants
             AttribIdentifier DimensionsList
             NumbersList Dimensions AttribMatrix
-            SolveOptions Function
+            SolveOptions Function AsFunc
 
 %%
 
@@ -100,7 +100,9 @@ Statement:
         std::cout << "\n|                                              |";
         std::cout << "\n|     202000560023 - Arthur Miasato Pimont     |";
         std::cout << "\n|                                              |";
-        std::cout << "\n+----------------------------------------------+\n\n";
+        std::cout << "\n+----------------------------------------------+";
+        std::cout << std::endl;
+        std::cout << std::endl;
     }
     | IDENTIFIER AttribIdentifier SEMICOLON {
         if(!$2) {
@@ -162,7 +164,7 @@ Statement:
             free($2);
         }
     }
-    | INTEGRATE L_PAREN Number COLON Number COMMA Function R_PAREN SEMICOLON {}
+    | INTEGRATE L_PAREN Number COLON Number COMMA Expr R_PAREN SEMICOLON {}
     | MATRIX EQUALS AttribMatrix SEMICOLON {
         Matrix *matrix =  new Matrix($3);
         
@@ -390,8 +392,8 @@ BoolOptions:
 ;
 
 AsFunc: 
-    L_PAREN Function R_PAREN {}
-    | {}
+    L_PAREN Expr R_PAREN { $$ = $2; }
+    | { $$ = nullptr; }
 ;
 
 AttribMatrix: 

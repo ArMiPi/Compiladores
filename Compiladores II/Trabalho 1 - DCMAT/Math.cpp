@@ -131,26 +131,21 @@ char *solveSum(char *variavel, char *inf_lim, char *sup_lim, char *rpn, HashTabl
     int inferior = atoi(inf_lim);
     int superior = atoi(sup_lim);
 
-    std::stringstream expr;
-    expr << " " << rpn << " ";
+    std::string expr = std::string(rpn);
+    std::string var = std::string(variavel);
+    std::string varValue;
+    std::string replaced;
 
-    std::stringstream var;
-    var << " " << variavel << " ";
-
-    std::stringstream varValue;
     float result = 0.0;
     char *rpnValue;
     for(int i = inferior; i <= superior; i++) {
-        varValue << " " << i << " ";
+        varValue = std::to_string(i);
 
-        std::replace(expr.str().begin(), expr.str().end(), var.str(), varValue.str());
+        replaced = replaceSubStr(expr, var, varValue);
 
-        rpnValue = solveRpn(expr.str().data(), hashTable, float_precision);
+        rpnValue = solveRpn(replaced.data(), hashTable, float_precision);
         result += atof(rpnValue);
 
-        varValue.str(std::string());
-        expr.str(std::string());
-        expr << " " << rpn << " ";
         free(rpnValue);
     }
 
