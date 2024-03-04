@@ -17,7 +17,7 @@ class Matrix {
 
         char *determinant(int float_precision);
 
-        char *linearSystem();
+        char *linearSystem(int float_precision);
 
         Matrix *add(Matrix *m2);
 

@@ -507,7 +507,16 @@ SolveOptions:
 
         $$ = m->determinant(settings->getFloatPrecision());
     }
-    | LINEAR_SYSTEM {}
+    | LINEAR_SYSTEM {
+        char *key = (char *) malloc((strlen("matrix") + 1) * sizeof(char));
+        sprintf(key, "matrix");
+
+        Matrix *m = (Matrix *) hashTable->getHItemValue(hashTable->get(key));
+
+        free(key);
+
+        $$ = m->linearSystem(settings->getFloatPrecision());
+    }
 ;
 
 AttribIdentifier: 

@@ -237,7 +237,6 @@ char *Matrix::determinant(int float_precision) {
         validCols.push_back(i);
     }
 
-
     float det = calc_determinant(this->matrix, this->cols, validLins, validCols);
 
     std::stringstream ss;
@@ -250,8 +249,81 @@ char *Matrix::determinant(int float_precision) {
     return c;
 }
 
-char *Matrix::linearSystem() {
+char *Matrix::linearSystem(int float_precision) {
+    if(this->lines != this->cols - 1) {
+        std::cout << "Invalid matrix" << std::endl;
+        return nullptr;
+    }
+    // Esta função utiliza a regra de Cramer.
 
+    // Vetor para armazenar todos os determinantes calculados
+    std::vector<float> determinantes;
+
+
+    char ***matrix = this->matrix;
+    // Matrix que será constantemente atualizada para o cáculo dos determinantes
+    char ***current_matrix = (char ***) malloc(this->lines * sizeof(char **));
+    for(int i = 0; i < this->lines; i++) {
+        current_matrix[i] = (char **) malloc((this->cols - 1) * sizeof(char *));
+
+        for(int j = 0; j < this->cols - 1; j++) {
+            current_matrix[i][j] = matrix[i][j];
+        }
+    }
+
+    // Vetores auxiliares para a função calc_determinant
+    std::vector<int> valid_lins, valid_cols;
+    for(int i = 0; i < this->lines; i++) {
+        valid_lins.push_back(i);
+        valid_cols.push_back(i);
+    }
+
+    // Calcular todos os determinantes necessários
+    determinantes.push_back(calc_determinant(current_matrix, this->lines, valid_lins, valid_cols));
+    for(int j = 0; j < this->lines; j++) {
+        // Atualizar matriz para cálculo do determinante
+        for(int i = 0; i < this->lines; i++) {
+            // Voltar coluna anterior para valores originais
+            if(j > 0) {
+                current_matrix[i][j-1] = this->matrix[i][j-1];
+            }
+
+            current_matrix[i][j] = this->matrix[i][this->lines];
+        }
+
+        determinantes.push_back(calc_determinant(current_matrix, this->lines, valid_lins, valid_cols));
+    }
+
+    std::stringstream ss;
+    if(determinantes[0] == 0) {
+        // Caso todos os determinantes possuam o valor 0
+        if(std::adjacent_find(determinantes.begin(), determinantes.end(), std::not_equal_to<>()) == determinantes.end()) {
+            ss << "SPI - The Linear System has infinitely many solutions" << std::endl;
+            ss << std::endl;
+        } else {
+            ss << "SI - The Linear System has no solution" << std::endl;
+            ss << std::endl;
+        }
+    } else {
+        ss.precision(float_precision);
+
+        ss << "Matrix x:" << std::endl;
+        ss << std::endl;
+        for(int i = 1; i < determinantes.size(); i++) {
+            ss << std::fixed << determinantes[i] / determinantes[0] << std::endl;
+        }
+        ss << std::endl;
+    }
+
+    char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+    sprintf(c, "%s", ss.str().data());
+
+    for(int i = 0; i < this->lines; i++) {
+        free(current_matrix[i]);
+    }
+    free(current_matrix);
+
+    return c;
 }
 
 Matrix *Matrix::add(Matrix *m2) {
