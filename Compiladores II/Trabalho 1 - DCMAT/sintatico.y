@@ -162,7 +162,7 @@ Statement:
             free($2);
         }
     }
-    | INTEGRATE L_PAREN Number COLON Number COMMA Expr R_PAREN SEMICOLON {}
+    | INTEGRATE L_PAREN Number COLON Number COMMA Function R_PAREN SEMICOLON {}
     | MATRIX EQUALS AttribMatrix SEMICOLON {
         Matrix *matrix =  new Matrix($3);
         
@@ -378,7 +378,7 @@ BoolOptions:
 ;
 
 AsFunc: 
-    L_PAREN Expr R_PAREN {}
+    L_PAREN Function R_PAREN {}
     | {}
 ;
 
