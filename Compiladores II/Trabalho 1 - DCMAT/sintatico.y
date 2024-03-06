@@ -732,7 +732,9 @@ Value:
 %%
 
 void yyerror(const char *s) {
+    std::cout << std::endl;
     std::cout << s << std::endl;
+    std::cout << std::endl;
 }
 
 int main(int argc, char **argv) {
