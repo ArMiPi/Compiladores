@@ -15,13 +15,15 @@
     extern int yylex();
     extern char* yytext;
 
-    void yyerror(char *s);
+    void yyerror(const char *s);
 
     HashTable *hashTable = new HashTable();
 
     Settings *settings = new Settings();
     SettingsOptionsManager *optionsManager = new SettingsOptionsManager();
 %}
+
+%define parse.error verbose
 
 %union {
     char *str;
@@ -85,24 +87,37 @@
             Term Factor BoolOptions MathConstants
             AttribIdentifier DimensionsList
             NumbersList Dimensions AttribMatrix
-            SolveOptions Function AsFunc
+            SolveOptions Function AsFunc Statement
 
 %%
 
 Programa: 
-    Statement NEW_LINE { return 0; }
+    Statement NEW_LINE { 
+        if($1) {
+            std::cout << std::endl;
+            std::cout << $1 << std::endl; 
+            free($1);
+        } 
+
+        return 0; 
+    }
+    | Statement error NEW_LINE { return 0; }
     | NEW_LINE { return 0; }
 ;
 
 Statement: 
     ABOUT SEMICOLON {
-        std::cout << "\n+----------------------------------------------+";
-        std::cout << "\n|                                              |";
-        std::cout << "\n|     202000560023 - Arthur Miasato Pimont     |";
-        std::cout << "\n|                                              |";
-        std::cout << "\n+----------------------------------------------+";
-        std::cout << std::endl;
-        std::cout << std::endl;
+        std::stringstream ss;
+        ss << "+----------------------------------------------+" << std::endl;
+        ss << "|                                              |" << std::endl;
+        ss << "|     202000560023 - Arthur Miasato Pimont     |" << std::endl;
+        ss << "|                                              |" << std::endl;
+        ss << "+----------------------------------------------+" << std::endl;
+
+        char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+        sprintf(c, "%s", ss.str().data());
+
+        $$ = c;
     }
     | IDENTIFIER AttribIdentifier SEMICOLON {
         if(!$2) {
@@ -110,23 +125,28 @@ Statement:
             HashItem *it = hashTable->get($1);
 
             if(!it) {
-                std::cout << std::endl;
-                std::cout << "Undefined symbol" << std::endl;
-                std::cout << std::endl;
+                std::stringstream ss;
+                ss << "Undefined symbol" << std::endl;
+                char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+                sprintf(c, "%s", ss.str().data());
+
+                $$ = c;
             } else {
                 if(std::string(hashTable->getHItemType(it)).compare("matrix") == 0) {
                     Matrix *m = (Matrix *) hashTable->getHItemValue(it);
                     char *mat = m->asString(settings->getFloatPrecision());
 
-                    std::cout << mat;
-
-                    free(mat);
+                    $$ = mat;
                 } else {
                     char *value = (char *) hashTable->getHItemValue(it);
 
-                    std::cout << std::endl;
-                    std::cout << $1 << " = " << value << std::endl;
-                    std::cout << std::endl;
+                    std::stringstream ss;
+                    ss << $1 << " = " << value << std::endl;
+                    
+                    char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+                    sprintf(c, "%s", ss.str().data());
+
+                    $$ = c;
                 }
             }
             free($1);
@@ -143,9 +163,13 @@ Statement:
 
                 hashTable->insert($1, type, value);
 
-                std::cout << std::endl;
-                std::cout << value << std::endl;
-                std::cout << std::endl;
+                std::stringstream ss;
+                ss << value << std::endl;
+
+                char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+                sprintf(c, "%s", ss.str().data());
+
+                $$ = c;
             } else {
                 Matrix *m = new Matrix(input[1].data());
                 std::string tp = "matrix";
@@ -156,15 +180,13 @@ Statement:
 
                 char *mstr = m->asString(settings->getFloatPrecision());
 
-                std::cout << mstr;
-
-                free(mstr);
+                $$ = mstr;
             }
 
             free($2);
         }
     }
-    | INTEGRATE L_PAREN Number COLON Number COMMA Expr R_PAREN SEMICOLON {}
+    | INTEGRATE L_PAREN Number COLON Number COMMA Expr R_PAREN SEMICOLON { $$ = nullptr; }
     | MATRIX EQUALS AttribMatrix SEMICOLON {
         Matrix *matrix =  new Matrix($3);
         
@@ -174,44 +196,63 @@ Statement:
         hashTable->insert(key, key, matrix);  
 
         free($3);
+
+        $$ = nullptr;
     }
-    | PLOT AsFunc SEMICOLON {}
-    | QUIT { return 1; }
-    | RESET SETTINGS SEMICOLON { settings->resetSettings(); }
+    | PLOT AsFunc SEMICOLON {
+
+        if($2) {
+            free($2);
+        }
+
+        $$ = nullptr;
+    }
+    | QUIT { return -1; }
+    | RESET SETTINGS SEMICOLON { settings->resetSettings(); $$ = nullptr; }
     | RPN L_PAREN Expr R_PAREN SEMICOLON { 
-        std::cout << std::endl;
-        std::cout << "Expression in RPN format:" << std::endl;
-        std::cout << std::endl;
-        std::cout << $3 << std::endl;
-        std::cout << std::endl;
+        std::stringstream ss;
+        ss << "Expression in RPN format:" << std::endl;
+        ss << std::endl;
+        ss << $3 << std::endl;
+
+        char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+        sprintf(c, "%s", ss.str().data());
 
         free($3);
+
+        $$ = c;
     }
-    | SET SettingOptions SEMICOLON { optionsManager->applyOptionChanges(settings); }
-    | SHOW ShowOptions SEMICOLON { std::cout << $2; free($2); }
-    | SOLVE SolveOptions SEMICOLON { std::cout << std::endl << $2; free($2); }
+    | SET SettingOptions SEMICOLON { optionsManager->applyOptionChanges(settings); $$ = nullptr; }
+    | SHOW ShowOptions SEMICOLON { $$ = $2; }
+    | SOLVE SolveOptions SEMICOLON { $$ = $2; }
     | SUM L_PAREN IDENTIFIER COMMA INT COLON INT COMMA Expr R_PAREN SEMICOLON {
         char *result = solveSum($3, $5, $7, $9, hashTable, settings->getFloatPrecision());
 
-        std::cout << std::endl;
-        std::cout << result << std::endl;
-        std::cout << std::endl;
+        std::stringstream ss;
+        ss << result << std::endl;
+
+        char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+        sprintf(c, "%s", ss.str().data());
 
         free($3);
         free($5);
         free($7);
         free($9);
-        free(result);
+        
+        $$ = c;
     }
     | Expr {
         char *value = solveRpn($1, hashTable, settings->getFloatPrecision());
-
-        std::cout << std::endl;
-        std::cout << value << std::endl;
-        std::cout << std::endl;
-
-        free(value);
+        
+        std::stringstream ss;
+        ss << value << std::endl;
+        
+        char *c = (char *) malloc((ss.str().size() + 1) * sizeof(char));
+        sprintf(c, "%s", ss.str().data());
+        
         free($1);
+
+        $$ = c;
     }
 ;
 
@@ -690,15 +731,17 @@ Value:
 
 %%
 
-void yyerror(char *s) {
-    std::cout << "\n" << s << "\nERROR\n";
+void yyerror(const char *s) {
+    std::cout << s << std::endl;
 }
 
 int main(int argc, char **argv) {
-    std::cout << ">";
-    
-    while(!yyparse()) {
+    int i = 0;
+    while(!i) {
         std::cout << ">";
+        i = yyparse();
+        
+        if(i > 0) i = 0;
     }
 
     return 0;

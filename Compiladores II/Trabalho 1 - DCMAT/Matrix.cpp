@@ -123,19 +123,22 @@ char *Matrix::asString(int float_precision) {
     for(int j = 0; j < this->cols; j++) size += strlen(this->matrix[0][j]);
     size += this->cols - 1;
 
-    str_matrix << "\n+-";
+    str_matrix << "+-";
     for(int i = 0; i < size; i++) str_matrix << " ";
-    str_matrix << "-+\n";
+    str_matrix << "-+";
+    str_matrix << std::endl;
     for(int i = 0; i < this->lines; i++) {
         str_matrix << "| ";
         for(int j = 0; j < this->cols; j++) {
             str_matrix << this->matrix[i][j] << " ";
         }
-        str_matrix << "|\n";
+        str_matrix << "|";
+        str_matrix << std::endl;
     }
     str_matrix << "+-";
     for(int i = 0; i < size; i++) str_matrix << " ";
-    str_matrix << "-+\n\n";
+    str_matrix << "-+";
+    str_matrix << std::endl;
 
     char *retorno = (char *) malloc((str_matrix.str().size() + 1) * sizeof(char));
     sprintf(retorno, "%s", str_matrix.str().data());

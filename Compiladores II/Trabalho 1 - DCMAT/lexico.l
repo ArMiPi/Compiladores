@@ -59,6 +59,6 @@ v_view                  { return V_VIEW; }
 [a-zA-Z]+[_0-9a-zA-Z]*  { yylval.str = strdup(yytext); return IDENTIFIER; }
 " "                     { }
 "\n"                    { return NEW_LINE; }
-.                       {printf("Invalid Symbol: %s", yytext);}
+.                       { printf("\nInvalid Symbol: %s\n\n", yytext); }
 
 %%
