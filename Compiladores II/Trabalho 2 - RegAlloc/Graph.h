@@ -14,6 +14,8 @@ class Graph {
 
         int getIdentifier();
 
+        GraphNode getNodeById(int id);
+
         /**
          *  Adiciona no grafo o nó com id `nodeId` e vizinhos `neighbors`.
          * 
@@ -21,20 +23,6 @@ class Graph {
          * por um espaço em branco.
         */
         void insertNode(int nodeId, std::string neighbors);
-
-        /**
-         * Retorna a posição do nó com o menor número de conexões, 
-         * caso ocorra um empate, será retornado, dentre esses nós, 
-         * o com o menor id
-        */
-        int getMinNode();
-
-        /**
-         * Retorna a posição do nó com o maior número de conexões, 
-         * caso ocorra um empate, será retornado, dentre esses nós, 
-         * o com o menor id
-        */
-        int getMaxNode();
 
         std::vector<GraphNode> getNodes();
 

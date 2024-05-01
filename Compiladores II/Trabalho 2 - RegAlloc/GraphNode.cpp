@@ -17,6 +17,10 @@ int GraphNode::getConnections() const {
     return this->connections;
 }
 
+void GraphNode::setConnections(int connections) {
+    this->connections = connections;
+}
+
 std::vector<int> GraphNode::defineNeighbors(std::string neighbors) {
     std::vector neighbors_name = split(neighbors, " ");
     std::vector<int> neighbors_ids;
@@ -28,3 +32,6 @@ std::vector<int> GraphNode::defineNeighbors(std::string neighbors) {
     return neighbors_ids;
 }
 
+std::vector<int> GraphNode::getNeighbors() {
+    return neighbors;
+}
