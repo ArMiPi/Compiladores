@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <iomanip>
 
 #include "string_utils.h"
 #include "Graph.h"
@@ -69,7 +70,8 @@ int main() {
     int i = number_of_colors;
     for(bool success: allocations) {
         std::cout << "Graph " << graph.getIdentifier() << " -> K = ";
-        std::cout << i << ": ";
+        std::cout << std::setw(std::to_string(number_of_colors).size()) << i;
+        std::cout << ": ";
 
         if(success) {
             std::cout << "Successful Allocation";
@@ -77,7 +79,9 @@ int main() {
             std::cout << "SPILL";
         }
 
-        std::cout << std::endl;
+        if(i != 2) {
+            std::cout << std::endl;
+        }
 
         i--;
     }
@@ -179,7 +183,7 @@ int getMinNode(std::vector<GraphNode> nodes) {
 }
 
 int getMaxNode(std::vector<GraphNode> nodes) {
-    auto maximo = std::min_element(nodes.begin(), nodes.end(), comparator_max);
+    auto maximo = std::max_element(nodes.begin(), nodes.end(), comparator_max);
     
     return std::distance(nodes.begin(), maximo);
 }
